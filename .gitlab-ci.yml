@@ -1,0 +1,28 @@
+image: maven:3.9.9-eclipse-temurin-21
+
+stages:
+  - build
+  - test
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+build_api:
+  stage: build
+  tags:
+    - maven
+  script:
+    - cd api
+    - mvn clean package -DskipTests
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
+
+test_api:
+  stage: test
+  tags:
+    - maven
+  script:
+    - cd api
+    - mvn test -Dspring.profiles.active=test
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
