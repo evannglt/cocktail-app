@@ -6,6 +6,8 @@ interface RequestOptions extends RequestInit {
   params?: Record<string, string>;
 }
 
+const AUTH_TOKEN_KEY = "authToken";
+
 class Api {
   private baseUrl: string;
 
@@ -39,7 +41,7 @@ class Api {
       headers.set("Content-Type", "application/json");
     }
 
-    const token = localStorage.getItem("authToken");
+    const token = await AsyncStorage.getItem(AUTH_TOKEN_KEY);
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
     }
@@ -94,15 +96,15 @@ class Api {
   }
 
   public async setAuthToken(token: string): Promise<void> {
-    await AsyncStorage.setItem("authToken", token);
+    await AsyncStorage.setItem(AUTH_TOKEN_KEY, token);
   }
 
   public async getAuthToken(): Promise<string | null> {
-    return AsyncStorage.getItem("authToken");
+    return AsyncStorage.getItem(AUTH_TOKEN_KEY);
   }
 
   public async clearAuthToken(): Promise<void> {
-    await AsyncStorage.removeItem("authToken");
+    await AsyncStorage.removeItem(AUTH_TOKEN_KEY);
   }
 }
 
