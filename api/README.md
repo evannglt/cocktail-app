@@ -1,19 +1,19 @@
-## Running the API
+## Running the dev contaners for the API
 
-To run the API, you need to first start the PostgreSQL database and then run the API.
+You need to first start the containers and then run the API.
 
-### Starting the PostgreSQL database
+### Starting the PostgreSQL database and PGAdmin
 
-To start the PostgreSQL database, run the following command:
+Run the following command:
 
 ```shell
-docker-compose up -d
+docker compose up -d
 ```
 
 To stop the containers, run the following command:
 
 ```shell
-docker-compose down
+docker compose down
 ```
 
 ### Running the API

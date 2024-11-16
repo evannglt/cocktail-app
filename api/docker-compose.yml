@@ -19,6 +19,8 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin@example.com
       PGADMIN_DEFAULT_PASSWORD: adminpassword
       PGADMIN_CONFIG_SERVER_MODE: "False"
+    depends_on:
+      - postgres
     volumes:
       - ./data/pgadmin:/var/lib/pgadmin
     ports:

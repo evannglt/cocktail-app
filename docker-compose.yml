@@ -1,0 +1,30 @@
+include:
+  - ./api/docker-compose.yml
+
+services:
+  backend:
+    build: ./api
+    container_name: backend
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres_db:5432/cocktaildb"
+      SPRING_DATASOURCE_USERNAME: "myuser"
+      SPRING_DATASOURCE_PASSWORD: "mypassword"
+    restart: unless-stopped
+  frontend:
+    build: ./cocktail-app
+    container_name: frontend
+    depends_on:
+      - backend
+    ports:
+      - "19000:19000"
+      - "19001:19001"
+      - "19002:19002"
+      - "8081:8081"
+    environment:
+      EXPO_PUBLIC_API_URL: "<your-ngrok-url>"
+    tty: true
+    restart: unless-stopped

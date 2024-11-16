@@ -12,7 +12,7 @@ class Api {
   private baseUrl: string;
 
   constructor() {
-    this.baseUrl = process.env.API_URL || "http://localhost:8080";
+    this.baseUrl = process.env.EXPO_PUBLIC_API_URL || "http://localhost:8080";
   }
 
   private getFullUrl(
