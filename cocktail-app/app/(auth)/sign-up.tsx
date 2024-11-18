@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import KeyboardAvoidingScrollLayout from "@/layout/KeyboardAvoidingScrollLayout";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Colors } from "@/constants/Colors";
-import api from "@/services/api";
 import { router } from "expo-router";
 import TextInputComponent from "@/components/TextInputComponent";
 import { register } from "@/services/AuthService";
@@ -38,6 +37,12 @@ const styles = StyleSheet.create({
   },
   termsContainer: {
     flexDirection: "row",
+    flexWrap: "wrap",
+    maxWidth: "90%",
+    textAlign: "justify",
+  },
+  termsTextContainer: {
+    flexDirection: "row",
     alignItems: "flex-start",
     marginTop: 15,
     width: "87%",
@@ -53,10 +58,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  termsTextContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-  },
   signUpButtonContainer: {
     width: "87%",
     backgroundColor: Colors.light.orange,
@@ -67,6 +68,7 @@ const styles = StyleSheet.create({
   signUpButtonText: {
     color: "white",
     textAlign: "center",
+    fontWeight: "bold",
     padding: 15,
   },
   logInTextContainer: {
@@ -74,10 +76,13 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   regularText: {
+    flexShrink: 1,
     color: "grey",
+    textAlign: "justify",
   },
   pressableText: {
     color: Colors.light.orange,
+    flexShrink: 1,
     marginLeft: 3,
     marginRight: 3,
   },
@@ -157,7 +162,7 @@ function SignUp() {
         isSecure
       />
 
-      <View style={styles.termsContainer}>
+      <View style={styles.termsTextContainer}>
         <Pressable
           style={styles.checkbox}
           onPress={() => setIsCheckboxChecked(!isCheckboxChecked)}
@@ -166,7 +171,8 @@ function SignUp() {
             <Icon name="check" size={16} color={Colors.light.orange} />
           )}
         </Pressable>
-        <View style={styles.termsTextContainer}>
+
+        <View style={styles.termsContainer}>
           <Text style={styles.regularText}>I've read and agree with the</Text>
           <Pressable>
             <Text style={styles.pressableText}>Terms and Conditions</Text>

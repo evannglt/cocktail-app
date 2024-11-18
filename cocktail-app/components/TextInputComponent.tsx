@@ -31,6 +31,7 @@ const TextInputComponent: React.FC<TextInputComponentProps> = ({
           { borderColor: focused ? Colors.light.orange : Colors.light.grey },
         ]}
         placeholder={placeholder}
+        placeholderTextColor={Colors.light.grey}
         value={value}
         secureTextEntry={secureTextEntry}
         onChangeText={onChange}

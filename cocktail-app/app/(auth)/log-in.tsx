@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { View, Pressable, Text, StyleSheet, Image } from "react-native";
 import KeyboardAvoidingScrollLayout from "@/layout/KeyboardAvoidingScrollLayout";
 import { Colors } from "@/constants/Colors";
-import api from "@/services/api";
 import { router } from "expo-router";
 import TextInputComponent from "@/components/TextInputComponent";
 import { login } from "@/services/AuthService";
@@ -11,14 +10,12 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     alignItems: "center",
-    justifyContent: "center",
     minHeight: "100%",
   },
   image: {
     width: "100%",
-    height: 320,
+    height: "35%",
     resizeMode: "cover",
-    position: "absolute",
     top: 0,
   },
   title: {
@@ -26,7 +23,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignSelf: "flex-start",
     marginLeft: 30,
-    marginTop: 150,
+    marginTop: 20,
     marginBottom: 15,
   },
   forgotPasswordButton: {
@@ -47,6 +44,7 @@ const styles = StyleSheet.create({
   },
   loginButtonText: {
     color: "white",
+    fontWeight: "bold",
     textAlign: "center",
     padding: 20,
   },

@@ -10,7 +10,9 @@ export const Colors = {
   light: {
     text: "#11181C",
     orange: "#FCA048",
+    pastelOrange: "#F0B923",
     grey: "#C5C6CC",
+    star: "#FFCA00",
     background: "#fff",
     tint: tintColorLight,
     icon: "#687076",
