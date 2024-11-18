@@ -1,3 +1,4 @@
+import { ErrorResponse } from "@/interfaces/responses/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
@@ -12,14 +13,15 @@ class Api {
   private baseUrl: string;
 
   constructor() {
-    this.baseUrl = process.env.EXPO_PUBLIC_API_URL || "http://localhost:8080";
+    this.baseUrl =
+      process.env.EXPO_PUBLIC_API_URL || "http://localhost:8080/api";
   }
 
   private getFullUrl(
     endpoint: string,
     params?: Record<string, string>
   ): string {
-    const url = new URL(endpoint, this.baseUrl);
+    const url = new URL(`${this.baseUrl}${endpoint}`);
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
         url.searchParams.append(key, value);
@@ -54,7 +56,8 @@ class Api {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const error = (await response.json()) as ErrorResponse;
+      throw new Error("Error from API: " + error.message);
     }
 
     return response.json();

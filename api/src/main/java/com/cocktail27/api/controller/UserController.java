@@ -1,5 +1,6 @@
 package com.cocktail27.api.controller;
 
+import com.cocktail27.api.dto.APIResponse;
 import com.cocktail27.api.model.User;
 import com.cocktail27.api.service.AuthService;
 import com.cocktail27.api.service.UserService;
@@ -35,14 +36,14 @@ public class UserController {
         if (user.isPresent()) {
             return new ResponseEntity<>(user.get(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new APIResponse("User not found"), HttpStatus.NOT_FOUND);
         }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User user) {
         if (!userService.getUserById(id).isPresent()) {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new APIResponse("User not found"), HttpStatus.NOT_FOUND);
         }
         user.setId(id);
         User updatedUser = userService.updateUser(user);
@@ -52,10 +53,10 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         if (!userService.getUserById(id).isPresent()) {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new APIResponse("User not found"), HttpStatus.NOT_FOUND);
         }
         userService.deleteUser(id);
-        return new ResponseEntity<>("User deleted successfully", HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(new APIResponse("User deleted successfully"), HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/me")
@@ -65,7 +66,7 @@ public class UserController {
         if (user.isPresent()) {
             return new ResponseEntity<>(user.get(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new APIResponse("User not found"), HttpStatus.NOT_FOUND);
         }
     }
 }

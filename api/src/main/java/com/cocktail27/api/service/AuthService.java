@@ -76,7 +76,8 @@ public class AuthService implements UserDetailsService {
 
     public AuthResponse login(AuthRequest authRequest) throws BadCredentialsException {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+                new UsernamePasswordAuthenticationToken(authRequest.getUsername().toLowerCase(),
+                        authRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();

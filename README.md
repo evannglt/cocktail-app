@@ -41,7 +41,7 @@ ngrok http 8080
 
 **The ngrok process needs to be running when starting the containers.**
 
-Copy the forwarding URL and replace the `EXPO_PUBLIC_API_URL` in the `docker-compose.yml` file with the URL.
+Copy the forwarding URL and replace the **\<your-ngrok-url\>** for the `EXPO_PUBLIC_API_URL` env variable in the `docker-compose.yml` file with it.
 
 ```yaml
 frontend:
@@ -55,7 +55,7 @@ frontend:
       - "19002:19002"
       - "8081:8081"
     environment:
-      EXPO_PUBLIC_API_URL: "<your-ngrok-url>"
+      EXPO_PUBLIC_API_URL: "<your-ngrok-url>/api"
     tty: true
     restart: unless-stopped
 ```

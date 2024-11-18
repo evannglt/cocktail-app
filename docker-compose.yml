@@ -25,6 +25,6 @@ services:
       - "19002:19002"
       - "8081:8081"
     environment:
-      EXPO_PUBLIC_API_URL: "<your-ngrok-url>"
+      EXPO_PUBLIC_API_URL: "<your-ngrok-url>/api"
     tty: true
     restart: unless-stopped

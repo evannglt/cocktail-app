@@ -5,6 +5,7 @@ import { Colors } from "@/constants/Colors";
 import api from "@/services/api";
 import { router } from "expo-router";
 import TextInputComponent from "@/components/TextInputComponent";
+import { login } from "@/services/AuthService";
 
 const styles = StyleSheet.create({
   container: {
@@ -71,8 +72,9 @@ function LogIn() {
   };
 
   const handlePress = async () => {
-    await api.setAuthToken("token");
-    router.replace("/(protected)");
+    login({ username, password }).then(
+      (success) => success && router.replace("/(protected)")
+    );
   };
 
   const handleRegisterPress = () => {

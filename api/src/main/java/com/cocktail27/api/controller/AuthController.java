@@ -2,6 +2,7 @@ package com.cocktail27.api.controller;
 
 import com.cocktail27.api.dto.AuthRequest;
 import com.cocktail27.api.dto.AuthResponse;
+import com.cocktail27.api.dto.APIResponse;
 import com.cocktail27.api.dto.RegisterRequest;
 import com.cocktail27.api.model.User;
 import com.cocktail27.api.service.AuthService;
@@ -22,7 +23,7 @@ public class AuthController {
             User newUser = authService.registerUser(registerRequest);
             return ResponseEntity.ok(newUser);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(new APIResponse(e.getMessage()));
         }
     }
 
@@ -32,13 +33,14 @@ public class AuthController {
             AuthResponse authResponse = authService.login(authRequest);
             return ResponseEntity.ok(authResponse);
         } catch (BadCredentialsException e) {
-            return ResponseEntity.status(401).body("Invalid username or password");
+            return ResponseEntity.status(401).body(new APIResponse("Invalid username or password"));
         }
     }
 
     @GetMapping("/validate")
     public ResponseEntity<?> validateToken(@RequestParam String token) {
         boolean isValid = authService.validateToken(token);
-        return isValid ? ResponseEntity.ok("Token is valid") : ResponseEntity.badRequest().body("Invalid token");
+        return isValid ? ResponseEntity.ok(new APIResponse("Token is valid"))
+                : ResponseEntity.badRequest().body(new APIResponse("Invalid token"));
     }
 }
