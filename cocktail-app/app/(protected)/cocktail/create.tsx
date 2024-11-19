@@ -1,0 +1,270 @@
+import { router } from "expo-router";
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  Pressable,
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
+import { AntDesign, FontAwesome6 } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Colors } from "@/constants/Colors";
+import MultilineTextInputComponent from "@/components/MultilineTextInputComponent";
+import StepInput from "@/components/StepInput";
+import KeyboardAvoidingScrollLayout from "@/layout/KeyboardAvoidingScrollLayout";
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: "100%",
+    minHeight: "100%",
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+    marginBottom: 10,
+  },
+  closeIcon: {
+    position: "absolute",
+    left: 16,
+    zIndex: 99,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
+    flex: 1,
+  },
+  image: {
+    width: "87%",
+    height: 250,
+    marginVertical: 10,
+    borderRadius: 4,
+    alignSelf: "center",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: Colors.light.lightOrange,
+  },
+  inputTitle: {
+    fontSize: 14,
+    fontWeight: "bold",
+    alignSelf: "flex-start",
+    marginLeft: 30,
+    marginTop: 10,
+  },
+  addButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: 10,
+  },
+  addText: {
+    fontSize: 14,
+    color: Colors.light.orange,
+    marginLeft: 8,
+  },
+  shareButtonContainer: {
+    width: "87%",
+    backgroundColor: Colors.light.orange,
+    borderRadius: 8,
+    marginTop: 5,
+    marginBottom: 25,
+    opacity: 1,
+    alignSelf: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
+  },
+  shareButtonText: {
+    fontWeight: "bold",
+    color: "white",
+    textAlign: "center",
+    padding: 15,
+  },
+});
+
+const CreateCocktail: React.FC = () => {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [ingredients, setIngredients] = useState<string[]>([""]);
+  const [quantities, setQuantities] = useState<string[]>([""]);
+  const [steps, setSteps] = useState<string[]>([""]);
+
+  const handleAddIngredient = () => {
+    setIngredients([...ingredients, ""]);
+    setQuantities([...quantities, ""]);
+  };
+
+  const handleRemoveIngredient = (index: number) => {
+    const updatedIngredients = ingredients.filter((_, i) => i !== index);
+    const updatedQuantities = quantities.filter((_, i) => i !== index);
+    setIngredients(updatedIngredients);
+    setQuantities(updatedQuantities);
+  };
+
+  const handleIngredientChange = (index: number, text: string) => {
+    const updatedIngredients = [...ingredients];
+    updatedIngredients[index] = text;
+    setIngredients(updatedIngredients);
+  };
+
+  const handleQuantityChange = (index: number, text: string) => {
+    const updatedQuantities = [...quantities];
+    updatedQuantities[index] = text;
+    setQuantities(updatedQuantities);
+  };
+
+  const handleAddStep = () => {
+    setSteps([...steps, ""]);
+  };
+
+  const handleRemoveStep = (index: number) => {
+    const updatedSteps = steps.filter((_, i) => i !== index);
+    setSteps(updatedSteps);
+  };
+
+  const handleStepChange = (index: number, text: string) => {
+    const updatedSteps = [...steps];
+    updatedSteps[index] = text;
+    setSteps(updatedSteps);
+  };
+
+  const isSharingEnabled = () => {
+    return (
+      title.trim() !== "" &&
+      description.trim() !== "" &&
+      ingredients.every((ingredient) => ingredient.trim() !== "") &&
+      quantities.every((quantity) => quantity.trim() !== "") &&
+      steps.every((step) => step.trim() !== "")
+    );
+  };
+
+  const handleSharePressed = async () => {
+    router.back();
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.headerContainer}>
+        <Pressable onPress={() => router.back()} style={styles.closeIcon}>
+          <AntDesign name="close" size={30} color="black" />
+        </Pressable>
+        <Text style={styles.title}>Create Recipe</Text>
+      </View>
+
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <TouchableOpacity activeOpacity={0.5} style={styles.image}>
+          <AntDesign name="plus" size={45} color={Colors.light.orange} />
+        </TouchableOpacity>
+
+        <MultilineTextInputComponent
+          title="Title"
+          placeholder="Add title..."
+          value={title}
+          onChange={setTitle}
+        />
+
+        <MultilineTextInputComponent
+          title="Description"
+          placeholder="Add your description..."
+          value={description}
+          onChange={setDescription}
+          height={175}
+        />
+        <Text style={styles.inputTitle}>Ingredients</Text>
+        <View>
+          {ingredients.map((ingredient, index) => (
+            <StepInput
+              key={index}
+              number={index + 1}
+              value={ingredient}
+              secondaryInput
+              secondaryValue={quantities[index]}
+              onSecondaryChange={(text) => handleQuantityChange(index, text)}
+              onChange={(text) => handleIngredientChange(index, text)}
+              onRemove={() => handleRemoveIngredient(index)}
+            />
+          ))}
+
+          <TouchableOpacity
+            onPress={handleAddIngredient}
+            activeOpacity={0.5}
+            style={styles.addButton}
+          >
+            <AntDesign
+              name="pluscircleo"
+              size={16}
+              color={Colors.light.orange}
+            />
+            <Text style={styles.addText}>Add another ingredient</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.inputTitle}>Steps</Text>
+        <View>
+          {steps.map((step, index) => (
+            <StepInput
+              key={index}
+              number={index + 1}
+              value={step}
+              onChange={(text) => handleStepChange(index, text)}
+              onRemove={() => handleRemoveStep(index)}
+            />
+          ))}
+
+          <TouchableOpacity
+            onPress={handleAddStep}
+            activeOpacity={0.5}
+            style={styles.addButton}
+          >
+            <AntDesign
+              name="pluscircleo"
+              size={16}
+              color={Colors.light.orange}
+            />
+            <Text style={styles.addText}>Add another step</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Pressable
+          onPress={handleSharePressed}
+          style={styles.shareButtonContainer}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <FontAwesome6
+              name="martini-glass-citrus"
+              size={17}
+              color={"white"}
+            />
+            <Text
+              style={[
+                styles.shareButtonText,
+                { opacity: isSharingEnabled() ? 1 : 0.5 },
+              ]}
+              disabled={!isSharingEnabled()}
+            >
+              Share your recipe
+            </Text>
+          </View>
+        </Pressable>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
+export default KeyboardAvoidingScrollLayout(CreateCocktail);

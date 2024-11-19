@@ -43,10 +43,7 @@ const TextInputComponent: React.FC<TextInputComponentProps> = ({
         onBlur={() => setFocused(false)}
       />
       {isSecure && (
-        <Pressable
-          onPress={handleToggleVisibility}
-          style={styles.passwordVisibilityIcon}
-        >
+        <Pressable onPress={handleToggleVisibility}>
           <Icon
             name={secureTextEntry ? "eye" : "eye-off"}
             size={20}
@@ -73,7 +70,6 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
   },
-  passwordVisibilityIcon: {},
 });
 
 export default TextInputComponent;

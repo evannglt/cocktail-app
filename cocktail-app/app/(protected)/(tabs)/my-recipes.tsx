@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, Text, View, ScrollView } from "react-native";
+import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FontAwesome5 } from "@expo/vector-icons";
 import MyCocktailCard from "@/components/MyCocktailCard";
@@ -12,6 +13,10 @@ const styles = StyleSheet.create({
 });
 
 export default function MyRecipes() {
+  const handlePlusPressed = () => {
+    router.push("/(protected)/cocktail/create");
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View
@@ -26,7 +31,7 @@ export default function MyRecipes() {
           <FontAwesome5 name="search" size={24} color="black" />
         </Pressable>
         <Text style={styles.title}>My Recipes</Text>
-        <Pressable onPress={() => console.log("Plus pressed")}>
+        <Pressable onPress={handlePlusPressed}>
           <FontAwesome5 name="plus" size={24} color="black" />
         </Pressable>
       </View>

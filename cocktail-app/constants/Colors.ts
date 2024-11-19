@@ -11,6 +11,7 @@ export const Colors = {
     text: "#11181C",
     orange: "#FCA048",
     pastelOrange: "#F0B923",
+    lightOrange: "#f7d782",
     grey: "#C5C6CC",
     buttonGrey: "#DDDDDD",
     star: "#FFCA00",
