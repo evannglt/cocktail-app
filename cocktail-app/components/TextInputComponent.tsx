@@ -24,12 +24,16 @@ const TextInputComponent: React.FC<TextInputComponentProps> = ({
   };
 
   return (
-    <View style={isSecure ? styles.inputContainer : styles.inputContainerBis}>
+    <View
+      style={[
+        styles.inputContainer,
+        {
+          borderColor: focused ? Colors.light.orange : Colors.light.grey,
+        },
+      ]}
+    >
       <TextInput
-        style={[
-          styles.input,
-          { borderColor: focused ? Colors.light.orange : Colors.light.grey },
-        ]}
+        style={styles.input}
         placeholder={placeholder}
         placeholderTextColor={Colors.light.grey}
         value={value}
@@ -56,25 +60,20 @@ const TextInputComponent: React.FC<TextInputComponentProps> = ({
 
 const styles = StyleSheet.create({
   inputContainer: {
-    position: "relative",
     width: "92%",
-  },
-  inputContainerBis: {
-    width: "92%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderWidth: 1,
+    borderRadius: 8,
+    height: 40,
+    paddingHorizontal: 10,
+    marginVertical: 10,
   },
   input: {
-    borderWidth: 1,
-    height: 40,
-    paddingLeft: 10,
-    paddingRight: 40,
-    margin: 10,
-    borderRadius: 8,
+    flex: 1,
   },
-  passwordVisibilityIcon: {
-    position: "absolute",
-    right: "5%",
-    top: "30%",
-  },
+  passwordVisibilityIcon: {},
 });
 
 export default TextInputComponent;

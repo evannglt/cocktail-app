@@ -57,10 +57,6 @@ const styles = StyleSheet.create({
 });
 
 const CocktailSteps: React.FC = () => {
-  const handlePress = async () => {
-    router.replace("/(auth)/log-in");
-  };
-
   const cocktailId = parseInt(useLocalSearchParams<{ id: string }>().id);
 
   const mockSteps = [

@@ -12,6 +12,7 @@ export const Colors = {
     orange: "#FCA048",
     pastelOrange: "#F0B923",
     grey: "#C5C6CC",
+    buttonGrey: "#DDDDDD",
     star: "#FFCA00",
     background: "#fff",
     tint: tintColorLight,

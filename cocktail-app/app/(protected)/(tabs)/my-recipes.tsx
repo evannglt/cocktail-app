@@ -42,7 +42,7 @@ export default function Index() {
         <Pressable onPress={() => console.log("Search pressed")}>
           <FontAwesome5 name="search" size={24} color="black" />
         </Pressable>
-        <Text style={styles.title}>My recipes</Text>
+        <Text style={styles.title}>My Recipes</Text>
         <Pressable onPress={() => console.log("Plus pressed")}>
           <FontAwesome5 name="plus" size={24} color="black" />
         </Pressable>

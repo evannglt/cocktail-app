@@ -94,6 +94,14 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     opacity: 1,
     alignSelf: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
   },
   mixingButtonText: {
     fontWeight: "bold",
@@ -121,7 +129,17 @@ const CocktailRecipe: React.FC = () => {
     });
   };
 
-  const mockCocktail = {
+  const handleUserPress = (userId: number) => {
+    router.push({
+      /*pathname: "/user/[id]",*/ // placeholder, to be called when user profile is implemented
+      pathname: "/(protected)/(tabs)/my-recipes",
+      /*params: {
+        id: userId,
+      },*/ // placeholder, to be called when user profile is implemented
+    });
+  };
+
+  const cocktail = {
     photo: require("@/assets/images/martini.jpg"),
     score: 4.5,
     name: "Mocktail Delight",
@@ -138,8 +156,6 @@ const CocktailRecipe: React.FC = () => {
     },
   };
 
-  const [cocktail, setCocktail] = useState(mockCocktail);
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ position: "relative" }}>
@@ -153,7 +169,7 @@ const CocktailRecipe: React.FC = () => {
       <View style={styles.headerContainer}>
         <TouchableOpacity
           activeOpacity={0.5}
-          onPress={() => console.log("User clicked")}
+          onPress={() => handleUserPress(1)}
         >
           <Image
             source={require("@/assets/images/profile.jpg")}

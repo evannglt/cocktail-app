@@ -12,7 +12,6 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
-import { useState } from "react";
 import RandomCocktailCard from "@/components/RandomCocktailCard";
 import { Carousel } from "react-native-basic-carousel";
 import { Photos } from "@/types/index";
@@ -51,7 +50,6 @@ const styles = StyleSheet.create({
 });
 
 export default function Index() {
-  const [activeIndex, setActiveIndex] = useState(0);
   const { width } = Dimensions.get("window");
 
   const handleCocktailPress = (cocktailId: number) => {
@@ -93,7 +91,6 @@ export default function Index() {
             </View>
           )}
           itemWidth={width}
-          onSnapToItem={(item: any) => setActiveIndex(item as number)}
           pagination
           paginationColor={Colors.light.orange}
           autoplay

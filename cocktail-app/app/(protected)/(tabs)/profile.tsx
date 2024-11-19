@@ -40,11 +40,19 @@ const styles = StyleSheet.create({
   },
   profileOptionContainer: {
     width: "87%",
-    backgroundColor: "#dddddd",
+    backgroundColor: Colors.light.buttonGrey,
     borderRadius: 8,
     marginBottom: 25,
     padding: 7,
     alignSelf: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
   },
   profileOptionContent: {
     flexDirection: "row",
@@ -65,6 +73,14 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.orange,
     borderRadius: 8,
     marginBottom: 25,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
   },
   logOutButtonText: {
     fontWeight: "bold",
@@ -79,6 +95,14 @@ export default function Profile() {
     logout().then(() => router.replace("/(auth)/log-in"));
   };
 
+  const handleEditProfilePress = () => {
+    router.push("/edit-profile");
+  };
+
+  const handleSettingsPress = () => {
+    router.push("/settings");
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.subcontainer}>
@@ -89,7 +113,7 @@ export default function Profile() {
         />
         <Text style={styles.name}>user1234</Text>
         <TouchableOpacity
-          onPress={() => console.log("edit pressed")}
+          onPress={handleEditProfilePress}
           activeOpacity={0.5}
           style={styles.profileOptionContainer}
         >
@@ -99,7 +123,7 @@ export default function Profile() {
           </View>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => console.log("settings pressed")}
+          onPress={handleSettingsPress}
           activeOpacity={0.5}
           style={styles.profileOptionContainer}
         >
