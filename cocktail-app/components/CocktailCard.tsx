@@ -5,9 +5,10 @@ import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import ScoreStars from "@/components/ScoreStars";
 
-interface RandomCocktailCardProps {
+interface CocktailCardProps {
   name: string;
   image: number;
+  isFavorite: boolean;
   score: number;
   cocktailId: number;
 }
@@ -62,16 +63,17 @@ const styles = StyleSheet.create({
   },
 });
 
-const CocktailCard: React.FC<RandomCocktailCardProps> = ({
+const CocktailCard: React.FC<CocktailCardProps> = ({
   name,
   image,
+  isFavorite,
   score,
   cocktailId,
 }) => {
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [isFavoriteState, setIsFavorite] = useState(isFavorite);
 
   const onFavoriteToggle = () => {
-    setIsFavorite(!isFavorite);
+    setIsFavorite(!isFavoriteState);
   };
 
   const handleCocktailPress = (cocktailId: number) => {
@@ -105,7 +107,7 @@ const CocktailCard: React.FC<RandomCocktailCardProps> = ({
         style={styles.favoriteIcon}
         activeOpacity={0.5}
       >
-        {isFavorite ? (
+        {isFavoriteState ? (
           <FontAwesome name="heart" size={16} color="red" />
         ) : (
           <FontAwesome5 name="heart" size={16} color={Colors.light.grey} />

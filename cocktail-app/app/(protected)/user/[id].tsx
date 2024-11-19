@@ -7,7 +7,7 @@ import {
   View,
   ScrollView,
 } from "react-native";
-import RandomCocktailCard from "@/components/RandomCocktailCard";
+import CocktailCard from "@/components/CocktailCard";
 import { AntDesign } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -74,10 +74,11 @@ const UserRecipes: React.FC = () => {
         }}
       >
         {[...Array(10)].map((_, index) => (
-          <RandomCocktailCard
+          <CocktailCard
             name="Pornstar Martini"
             image={require("@/assets/images/welcomeImageCocktails.png")}
             score={3}
+            isFavorite={false}
             cocktailId={index}
             key={index}
           />

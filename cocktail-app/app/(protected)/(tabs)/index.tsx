@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import {
   Dimensions,
   Image,
@@ -10,7 +11,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
-import RandomCocktailCard from "@/components/RandomCocktailCard";
+import CocktailCard from "@/components/CocktailCard";
 import { Carousel } from "react-native-basic-carousel";
 import { Photos } from "@/types/index";
 
@@ -50,6 +51,10 @@ const styles = StyleSheet.create({
 export default function Index() {
   const { width } = Dimensions.get("window");
 
+  const handleFavoritesPressed = (): void => {
+    router.push("/(protected)/favorites");
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View
@@ -63,7 +68,7 @@ export default function Index() {
         <Pressable onPress={() => console.log("Search pressed")}>
           <FontAwesome5 name="search" size={24} color="black" />
         </Pressable>
-        <Pressable onPress={() => console.log("Favourites pressed")}>
+        <Pressable onPress={handleFavoritesPressed}>
           <FontAwesome5 name="heart" size={24} color="black" />
         </Pressable>
       </View>
@@ -94,10 +99,11 @@ export default function Index() {
         }}
       >
         {[...Array(5)].map((_, index) => (
-          <RandomCocktailCard
+          <CocktailCard
             name="Pornstar Martini"
             image={require("@/assets/images/welcomeImageCocktails.png")}
             score={3.5}
+            isFavorite={false}
             cocktailId={index}
             key={index}
           />
