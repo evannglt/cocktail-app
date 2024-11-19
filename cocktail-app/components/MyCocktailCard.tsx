@@ -1,11 +1,13 @@
 import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { router } from "expo-router";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { Colors } from "@/constants/Colors";
 
 interface CocktailCardProps {
   name: string;
   image: number;
   description: string;
+  cocktailId: number;
 }
 
 const styles = StyleSheet.create({
@@ -49,9 +51,23 @@ const CocktailCard: React.FC<CocktailCardProps> = ({
   name,
   image,
   description,
+  cocktailId,
 }) => {
+  const handleCocktailPress = (cocktailId: number) => {
+    router.push({
+      pathname: "/cocktail/[id]",
+      params: {
+        id: cocktailId,
+      },
+    });
+  };
+
   return (
-    <View style={styles.card}>
+    <TouchableOpacity
+      onPress={() => handleCocktailPress(cocktailId)}
+      activeOpacity={0.5}
+      style={styles.card}
+    >
       <Image source={image} style={styles.image} />
       <View style={styles.info}>
         <Text style={styles.name}>{name}</Text>
@@ -59,7 +75,7 @@ const CocktailCard: React.FC<CocktailCardProps> = ({
           {description}
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { router } from "expo-router";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
@@ -8,6 +9,7 @@ interface RandomCocktailCardProps {
   name: string;
   image: number;
   score: number;
+  cocktailId: number;
 }
 
 const styles = StyleSheet.create({
@@ -64,6 +66,7 @@ const CocktailCard: React.FC<RandomCocktailCardProps> = ({
   name,
   image,
   score,
+  cocktailId,
 }) => {
   const [isFavorite, setIsFavorite] = useState(false);
 
@@ -71,8 +74,21 @@ const CocktailCard: React.FC<RandomCocktailCardProps> = ({
     setIsFavorite(!isFavorite);
   };
 
+  const handleCocktailPress = (cocktailId: number) => {
+    router.push({
+      pathname: "/cocktail/[id]",
+      params: {
+        id: cocktailId,
+      },
+    });
+  };
+
   return (
-    <View style={styles.card}>
+    <TouchableOpacity
+      onPress={() => handleCocktailPress(cocktailId)}
+      activeOpacity={0.5}
+      style={styles.card}
+    >
       <Image source={image} style={styles.image} />
       <View style={styles.headerContainer}>
         <Image
@@ -95,7 +111,7 @@ const CocktailCard: React.FC<RandomCocktailCardProps> = ({
           <FontAwesome5 name="heart" size={16} color={Colors.light.grey} />
         )}
       </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   );
 };
 

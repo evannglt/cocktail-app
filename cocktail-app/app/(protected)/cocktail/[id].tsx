@@ -131,11 +131,10 @@ const CocktailRecipe: React.FC = () => {
 
   const handleUserPress = (userId: number) => {
     router.push({
-      /*pathname: "/user/[id]",*/ // placeholder, to be called when user profile is implemented
-      pathname: "/(protected)/(tabs)/my-recipes",
-      /*params: {
+      pathname: "/user/[id]",
+      params: {
         id: userId,
-      },*/ // placeholder, to be called when user profile is implemented
+      },
     });
   };
 

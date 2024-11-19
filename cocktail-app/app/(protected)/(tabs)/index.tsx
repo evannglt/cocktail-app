@@ -1,4 +1,3 @@
-import { router } from "expo-router";
 import {
   Dimensions,
   Image,
@@ -7,7 +6,6 @@ import {
   Text,
   View,
   ScrollView,
-  TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -51,15 +49,6 @@ const styles = StyleSheet.create({
 
 export default function Index() {
   const { width } = Dimensions.get("window");
-
-  const handleCocktailPress = (cocktailId: number) => {
-    router.push({
-      pathname: "/cocktail/[id]",
-      params: {
-        id: cocktailId,
-      },
-    });
-  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -105,18 +94,13 @@ export default function Index() {
         }}
       >
         {[...Array(5)].map((_, index) => (
-          <TouchableOpacity
-            onPress={() => handleCocktailPress(index)}
-            activeOpacity={0.5}
+          <RandomCocktailCard
+            name="Pornstar Martini"
+            image={require("@/assets/images/welcomeImageCocktails.png")}
+            score={3.5}
+            cocktailId={index}
             key={index}
-          >
-            <RandomCocktailCard
-              name="Pornstar Martini"
-              image={require("@/assets/images/welcomeImageCocktails.png")}
-              score={3.5}
-              key={index}
-            />
-          </TouchableOpacity>
+          />
         ))}
       </ScrollView>
     </SafeAreaView>
