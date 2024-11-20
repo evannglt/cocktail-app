@@ -18,7 +18,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     alignSelf: "flex-start",
-    marginLeft: 30,
+    marginLeft: 20,
+    marginTop: 30,
     marginBottom: 10,
   },
   subtitle: {
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
     alignSelf: "flex-start",
-    marginLeft: 30,
+    marginLeft: 20,
     marginTop: 10,
   },
   termsContainer: {

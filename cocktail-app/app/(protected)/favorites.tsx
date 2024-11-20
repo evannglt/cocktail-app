@@ -1,8 +1,14 @@
 import React from "react";
 import { router } from "expo-router";
-import { View, Pressable, Text, StyleSheet, ScrollView } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import {
+  View,
+  Pressable,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+} from "react-native";
+import { AntDesign } from "@expo/vector-icons";
 import CocktailCard from "@/components/CocktailCard";
 
 const styles = StyleSheet.create({

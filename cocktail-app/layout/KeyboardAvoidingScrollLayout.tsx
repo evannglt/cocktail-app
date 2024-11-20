@@ -1,5 +1,4 @@
-import { StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const styles = StyleSheet.create({
@@ -19,7 +18,7 @@ function KeyboardAvoidingScrollLayout<T extends object>(
 ) {
   return function WithScrollLayout(props: T) {
     return (
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <KeyboardAwareScrollView
           contentContainerStyle={styles.contentWrapper}
           keyboardShouldPersistTaps="handled"
@@ -29,7 +28,7 @@ function KeyboardAvoidingScrollLayout<T extends object>(
         >
           <WrappedComponent {...props} />
         </KeyboardAwareScrollView>
-      </SafeAreaView>
+      </View>
     );
   };
 }
