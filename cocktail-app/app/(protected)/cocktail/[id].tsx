@@ -7,6 +7,7 @@ import {
   StyleSheet,
   View,
   ScrollView,
+  SafeAreaView,
   TouchableOpacity,
 } from "react-native";
 import {
@@ -15,7 +16,6 @@ import {
   FontAwesome5,
   FontAwesome6,
 } from "@expo/vector-icons";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "@/constants/Colors";
 import ScoreStars from "@/components/ScoreStars";
 

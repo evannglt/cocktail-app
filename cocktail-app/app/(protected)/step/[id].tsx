@@ -4,11 +4,11 @@ import {
   Image,
   Text,
   StyleSheet,
+  SafeAreaView,
   View,
   ScrollView,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "@/constants/Colors";
 
 const styles = StyleSheet.create({

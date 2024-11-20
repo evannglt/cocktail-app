@@ -5,11 +5,11 @@ import {
   Pressable,
   Text,
   View,
+  SafeAreaView,
   ScrollView,
 } from "react-native";
 import CocktailCard from "@/components/CocktailCard";
 import { AntDesign } from "@expo/vector-icons";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 const styles = StyleSheet.create({
   container: {
