@@ -4,11 +4,11 @@ import {
   Image,
   Pressable,
   StyleSheet,
+  SafeAreaView,
   Text,
   View,
   ScrollView,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import CocktailCard from "@/components/CocktailCard";

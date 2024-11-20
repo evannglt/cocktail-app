@@ -2,6 +2,7 @@ import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   StyleSheet,
+  SafeAreaView,
   Pressable,
   Text,
   View,
@@ -9,7 +10,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { AntDesign, FontAwesome6 } from "@expo/vector-icons";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "@/constants/Colors";
 import MultilineTextInputComponent from "@/components/MultilineTextInputComponent";
 import StepInput from "@/components/StepInput";
