@@ -57,7 +57,7 @@ export default function Favorites() {
             name="Pornstar Martini"
             image={require("@/assets/images/welcomeImageCocktails.png")}
             score={2}
-            numberReviews={1234}
+            numberOfReviews={1234}
             isFavorite={true}
             cocktailId={index}
             key={index}
