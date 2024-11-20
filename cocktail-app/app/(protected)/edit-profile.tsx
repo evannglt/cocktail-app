@@ -1,9 +1,15 @@
 import { router } from "expo-router";
 import { useState } from "react";
-import { Image, StyleSheet, Pressable, Text, View } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  SafeAreaView,
+  Pressable,
+  Text,
+  View,
+} from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import KeyboardAvoidingScrollLayout from "@/layout/KeyboardAvoidingScrollLayout";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "@/constants/Colors";
 import TextInputComponent from "@/components/TextInputComponent";
 
@@ -33,7 +39,7 @@ const styles = StyleSheet.create({
     zIndex: 99,
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
     flex: 1,
