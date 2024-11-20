@@ -78,6 +78,7 @@ const UserRecipes: React.FC = () => {
             name="Pornstar Martini"
             image={require("@/assets/images/welcomeImageCocktails.png")}
             score={3}
+            numberOfReviews={1234}
             isFavorite={false}
             cocktailId={index}
             key={index}

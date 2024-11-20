@@ -8,7 +8,7 @@ import {
   View,
   ScrollView,
 } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 
 const styles = StyleSheet.create({
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     color: Colors.light.pastelOrange,
   },
-  stepText: {
+  text: {
     fontSize: 14,
     alignSelf: "center",
     color: "grey",
@@ -54,35 +54,32 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     textAlign: "justify",
   },
+  glassText: {
+    fontSize: 14,
+    fontWeight: "bold",
+    alignSelf: "center",
+    textAlign: "justify",
+  },
+  glassContainer: { flexDirection: "row", marginBottom: 30 },
+  glassIcon: {
+    paddingHorizontal: 15,
+    alignSelf: "center",
+  },
 });
 
 const CocktailSteps: React.FC = () => {
   const cocktailId = parseInt(useLocalSearchParams<{ id: string }>().id);
 
-  const mockSteps = [
-    {
-      number: 1,
-      content:
-        "Add vanilla vodka, Passoã (or any other passion fruit liqueur), passion fruit purée, lime juice and vanilla syrup to a shaker filled with ice.",
-    },
-    {
-      number: 2,
-      content: "Secure the lid and shake vigorously for about 15 seconds.",
-    },
-    {
-      number: 3,
-      content:
-        "Strain the mixture into a chilled martini to remove any ice or pulp.",
-    },
-    {
-      number: 4,
-      content: "Garnish with half a passion fruit on top of it.",
-    },
-    {
-      number: 5,
-      content: "Enjoy!",
-    },
-  ];
+  const mockCocktail = {
+    steps: [
+      "Add vanilla vodka, Passoã (or any other passion fruit liqueur), passion fruit purée, lime juice and vanilla syrup to a shaker filled with ice.",
+      "Secure the lid and shake vigorously for about 15 seconds.",
+      "Strain the mixture into a chilled martini to remove any ice or pulp.",
+      "Garnish with half a passion fruit on top of it.",
+      "Enjoy!",
+    ],
+    glass: "Cocktail glass",
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -99,10 +96,19 @@ const CocktailSteps: React.FC = () => {
 
       <Text style={styles.title}>Steps</Text>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        {mockSteps.map((step) => (
-          <View key={step.number} style={styles.stepContainer}>
-            <Text style={styles.stepNumber}>{step.number}</Text>
-            <Text style={styles.stepText}>{step.content}</Text>
+        <View style={styles.glassContainer}>
+          <MaterialCommunityIcons
+            name="glass-cocktail"
+            size={25}
+            style={styles.glassIcon}
+            color={Colors.light.pastelOrange}
+          />
+          <Text style={styles.glassText}>{mockCocktail.glass}</Text>
+        </View>
+        {mockCocktail.steps.map((step, index) => (
+          <View key={index} style={styles.stepContainer}>
+            <Text style={styles.stepNumber}>{index + 1}</Text>
+            <Text style={styles.text}>{step}</Text>
           </View>
         ))}
       </ScrollView>
