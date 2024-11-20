@@ -1,13 +1,14 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 import { Colors } from "@/constants/Colors";
 import { FontAwesome } from "@expo/vector-icons";
 
 interface ScoreStarsProps {
   score: number;
+  numberOfReviews: number;
 }
 
-const ScoreStars: React.FC<ScoreStarsProps> = ({ score }) => {
+const ScoreStars: React.FC<ScoreStarsProps> = ({ score, numberOfReviews }) => {
   const stars = [];
   const fullStars = Math.floor(score);
   const hasHalfStar = score % 1 !== 0;
@@ -38,14 +39,26 @@ const ScoreStars: React.FC<ScoreStarsProps> = ({ score }) => {
     }
   }
 
-  return <View style={styles.stars}>{stars}</View>;
+  return (
+    <View style={styles.container}>
+      <View style={styles.stars}>{stars}</View>
+      <Text style={styles.reviewNumber}>({numberOfReviews})</Text>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
+  container: { flex: 1, flexDirection: "row" },
   stars: {
     flexDirection: "row",
     paddingLeft: 10,
     paddingBottom: 20,
+  },
+  reviewNumber: {
+    marginLeft: 10,
+    fontSize: 14,
+    color: Colors.light.grey,
+    textAlign: "justify",
   },
 });
 

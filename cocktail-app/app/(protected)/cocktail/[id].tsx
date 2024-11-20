@@ -16,6 +16,7 @@ import {
   FontAwesome5,
   FontAwesome6,
 } from "@expo/vector-icons";
+import { Chip } from "react-native-paper";
 import { Colors } from "@/constants/Colors";
 import ScoreStars from "@/components/ScoreStars";
 
@@ -47,6 +48,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginBottom: 10,
   },
+  scoreContainer: { paddingLeft: 10, height: 40 },
   stars: {
     flexDirection: "row",
     paddingLeft: 20,
@@ -60,32 +62,24 @@ const styles = StyleSheet.create({
     marginBottom: 25,
     textAlign: "justify",
   },
+  tagsContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginHorizontal: 20,
+    marginBottom: 10,
+  },
   ingredientsTitle: {
     fontSize: 15,
     fontWeight: "bold",
     alignSelf: "flex-start",
     marginLeft: 20,
-    marginTop: 10,
-  },
-  ingredientsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  ingredientsSubtitle: {
-    fontSize: 13,
-    fontWeight: "bold",
-    alignSelf: "flex-start",
-    marginLeft: 20,
-    marginTop: 10,
-    marginBottom: 4,
-  },
-  ingredientColumn: {
-    width: "48%",
+    marginVertical: 10,
   },
   ingredientList: {
     color: "grey",
     fontSize: 13,
     marginLeft: 20,
+    marginBottom: 5,
   },
   mixingButtonContainer: {
     width: "87%",
@@ -116,6 +110,8 @@ const CocktailRecipe: React.FC = () => {
 
   const [isFavorite, setIsFavorite] = useState(false);
 
+  const alcoholic = true;
+
   const onFavoriteToggle = () => {
     setIsFavorite(!isFavorite);
   };
@@ -145,14 +141,15 @@ const CocktailRecipe: React.FC = () => {
     description:
       "The Martini blends smooth vanilla vodka with fresh passion fruit, balanced by a hint of lime. It's a vibrant, tropical treat made to impress. Ideal for special occasions or a night in, this cocktail is both bold and sophisticated. The Pornstar Martini blends smooth vanilla vodka with fresh passion fruit, balanced by a hint of lime. It's a vibrant, tropical treat made to impress. Ideal for special occasions or a night in, this cocktail is both bold and sophisticated.",
     ingredients: {
-      alcohol: ["25 ml Vanilla Vodka", "15 ml Passoa"],
-      juice: [
-        "30 ml Passion Fruit purée",
-        "15 ml Lime juice",
-        "10 ml Vanilla Syrup",
-      ],
-      garnish: ["Half a fresh passion fruit"],
+      "Vanilla Vodka": "25 mL",
+      Passoa: "15 mL",
+      "Passion Fruit purée": "30 mL",
+      "Lime juice": "15 mL",
+      "Vanilla Syrup": "10 mL",
+      "Fresh passion fruit": "1/2",
     },
+    tags: ["IPA", "Sour", "Fruity", "ContemporaryClassic"],
+    numberOfReviews: 234,
   };
 
   return (
@@ -205,39 +202,64 @@ const CocktailRecipe: React.FC = () => {
               )}
             </TouchableOpacity>
           </View>
-          <View style={{ paddingLeft: 10 }}>
-            <ScoreStars score={cocktail.score} />
+          <View style={styles.scoreContainer}>
+            <ScoreStars
+              score={cocktail.score}
+              numberOfReviews={cocktail.numberOfReviews}
+            />
           </View>
         </View>
       </View>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={styles.tagsContainer}>
+          {cocktail.tags.map((tag, index) => (
+            <Chip
+              key={index}
+              style={{
+                backgroundColor: Colors.light.orange,
+                margin: 2,
+                borderRadius: 15,
+              }}
+              textStyle={{ color: "white" }}
+            >
+              {tag}
+            </Chip>
+          ))}
+          {alcoholic ? (
+            <Chip
+              style={{
+                backgroundColor: Colors.light.pastelRed,
+                margin: 2,
+                borderRadius: 15,
+              }}
+              textStyle={{ color: "white" }}
+            >
+              Alcoholic
+            </Chip>
+          ) : (
+            <Chip
+              style={{
+                backgroundColor: Colors.light.pastelGreen,
+                margin: 2,
+                borderRadius: 15,
+              }}
+              textStyle={{ color: "white" }}
+            >
+              Non-Alcoholic
+            </Chip>
+          )}
+        </View>
+
         <Text style={styles.description}>{cocktail.description}</Text>
 
         <Text style={styles.ingredientsTitle}>Ingredients</Text>
-        <View style={styles.ingredientsContainer}>
-          <View style={styles.ingredientColumn}>
-            <Text style={styles.ingredientsSubtitle}>Alcohol:</Text>
-            {cocktail.ingredients.alcohol.map((ingredient, index) => (
-              <Text key={index} style={styles.ingredientList}>
-                • {ingredient}
-              </Text>
-            ))}
-            <Text style={styles.ingredientsSubtitle}>Juice:</Text>
-            {cocktail.ingredients.juice.map((ingredient, index) => (
-              <Text key={index} style={styles.ingredientList}>
-                • {ingredient}
-              </Text>
-            ))}
-          </View>
-          <View style={styles.ingredientColumn}>
-            <Text style={styles.ingredientsSubtitle}>Garnish:</Text>
-            {cocktail.ingredients.garnish.map((ingredient, index) => (
-              <Text key={index} style={styles.ingredientList}>
-                • {ingredient}
-              </Text>
-            ))}
-          </View>
-        </View>
+        {Object.entries(cocktail.ingredients).map(
+          ([ingredient, amount]: [string, string], index: number) => (
+            <Text key={index} style={styles.ingredientList}>
+              • {amount} {ingredient}
+            </Text>
+          )
+        )}
       </ScrollView>
       <Pressable
         onPress={() => handleStartMixingPress(cocktailId)}

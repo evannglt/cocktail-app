@@ -10,6 +10,7 @@ interface CocktailCardProps {
   image: number;
   isFavorite: boolean;
   score: number;
+  numberReviews: number;
   cocktailId: number;
 }
 
@@ -68,6 +69,7 @@ const CocktailCard: React.FC<CocktailCardProps> = ({
   image,
   isFavorite,
   score,
+  numberReviews,
   cocktailId,
 }) => {
   const [isFavoriteState, setIsFavorite] = useState(isFavorite);
@@ -99,7 +101,7 @@ const CocktailCard: React.FC<CocktailCardProps> = ({
         />
         <View style={styles.info}>
           <Text style={styles.name}>{name}</Text>
-          <ScoreStars score={score} />
+          <ScoreStars score={score} numberReviews={numberReviews} />
         </View>
       </View>
       <TouchableOpacity
