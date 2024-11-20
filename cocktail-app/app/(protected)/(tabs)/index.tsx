@@ -103,7 +103,7 @@ export default function Index() {
             name="Pornstar Martini"
             image={require("@/assets/images/welcomeImageCocktails.png")}
             score={3.5}
-            numberReviews={34}
+            numberOfReviews={34}
             isFavorite={false}
             cocktailId={index}
             key={index}
