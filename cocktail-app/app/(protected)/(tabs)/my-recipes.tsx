@@ -19,6 +19,10 @@ const styles = StyleSheet.create({
 });
 
 export default function MyRecipes() {
+  const handleSearchPressed = (): void => {
+    router.push("/(protected)/search");
+  };
+
   const handlePlusPressed = () => {
     router.push("/(protected)/cocktail/create");
   };
@@ -33,7 +37,7 @@ export default function MyRecipes() {
           padding: 16,
         }}
       >
-        <Pressable onPress={() => console.log("Search pressed")}>
+        <Pressable onPress={handleSearchPressed}>
           <FontAwesome5 name="search" size={24} color="black" />
         </Pressable>
         <Text style={styles.title}>My Recipes</Text>
