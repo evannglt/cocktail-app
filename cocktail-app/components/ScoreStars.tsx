@@ -1,14 +1,19 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { Colors } from "@/constants/Colors";
-import { FontAwesome } from "@expo/vector-icons";
+import PressableOrNotStar from "@/components/PressableOrNotStar";
 
 interface ScoreStarsProps {
   score: number;
   numberOfReviews: number;
+  pressable?: boolean;
 }
 
-const ScoreStars: React.FC<ScoreStarsProps> = ({ score, numberOfReviews }) => {
+const ScoreStars: React.FC<ScoreStarsProps> = ({
+  score,
+  numberOfReviews,
+  pressable = false,
+}) => {
   const stars = [];
   const fullStars = Math.floor(score);
   const hasHalfStar = score % 1 !== 0;
@@ -16,24 +21,29 @@ const ScoreStars: React.FC<ScoreStarsProps> = ({ score, numberOfReviews }) => {
   for (let i = 0; i < 5; i++) {
     if (i < fullStars) {
       stars.push(
-        <FontAwesome key={i} name="star" size={18} color={Colors.light.star} />
+        <PressableOrNotStar
+          key={i}
+          iconName="star"
+          starNumber={i + 1}
+          pressable={pressable}
+        />
       );
     } else if (i === fullStars && hasHalfStar) {
       stars.push(
-        <FontAwesome
+        <PressableOrNotStar
           key={i}
-          name="star-half-o"
-          size={18}
-          color={Colors.light.star}
+          iconName="star-half-o"
+          starNumber={i + 1}
+          pressable={pressable}
         />
       );
     } else {
       stars.push(
-        <FontAwesome
+        <PressableOrNotStar
           key={i}
-          name="star-o"
-          size={18}
-          color={Colors.light.star}
+          iconName="star-o"
+          starNumber={i + 1}
+          pressable={pressable}
         />
       );
     }
