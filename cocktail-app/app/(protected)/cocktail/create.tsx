@@ -12,8 +12,8 @@ import {
 import { AntDesign, FontAwesome6 } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import MultilineTextInputComponent from "@/components/MultilineTextInputComponent";
-import StepInput from "@/components/StepInput";
 import KeyboardAvoidingScrollLayout from "@/layout/KeyboardAvoidingScrollLayout";
+import DynamicTextInput from "@/components/DynamicTextInput";
 
 const styles = StyleSheet.create({
   container: {
@@ -49,24 +49,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: Colors.light.lightOrange,
   },
-  inputTitle: {
-    fontSize: 14,
-    fontWeight: "bold",
-    alignSelf: "flex-start",
-    marginLeft: 30,
-    marginTop: 10,
-  },
-  addButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginVertical: 10,
-  },
-  addText: {
-    fontSize: 14,
-    color: Colors.light.orange,
-    marginLeft: 8,
-  },
   shareButtonContainer: {
     width: "87%",
     backgroundColor: Colors.light.orange,
@@ -98,44 +80,41 @@ const CreateCocktail: React.FC = () => {
   const [ingredients, setIngredients] = useState<string[]>([""]);
   const [quantities, setQuantities] = useState<string[]>([""]);
   const [steps, setSteps] = useState<string[]>([""]);
+  const [tags, setTags] = useState<string[]>([""]);
 
   const handleAddIngredient = () => {
-    setIngredients([...ingredients, ""]);
-    setQuantities([...quantities, ""]);
+    handleAddItem(setIngredients);
+    handleAddItem(setQuantities);
   };
 
   const handleRemoveIngredient = (index: number) => {
-    const updatedIngredients = ingredients.filter((_, i) => i !== index);
-    const updatedQuantities = quantities.filter((_, i) => i !== index);
-    setIngredients(updatedIngredients);
-    setQuantities(updatedQuantities);
+    handleRemoveItem(index, setIngredients);
+    handleRemoveItem(index, setQuantities);
   };
 
-  const handleIngredientChange = (index: number, text: string) => {
-    const updatedIngredients = [...ingredients];
-    updatedIngredients[index] = text;
-    setIngredients(updatedIngredients);
+  const handleAddItem = (
+    setItems: React.Dispatch<React.SetStateAction<string[]>>
+  ) => {
+    setItems((prevItems) => [...prevItems, ""]);
   };
 
-  const handleQuantityChange = (index: number, text: string) => {
-    const updatedQuantities = [...quantities];
-    updatedQuantities[index] = text;
-    setQuantities(updatedQuantities);
+  const handleRemoveItem = (
+    index: number,
+    setItems: React.Dispatch<React.SetStateAction<string[]>>
+  ) => {
+    setItems((prevItems) => prevItems.filter((_, i) => i !== index));
   };
 
-  const handleAddStep = () => {
-    setSteps([...steps, ""]);
-  };
-
-  const handleRemoveStep = (index: number) => {
-    const updatedSteps = steps.filter((_, i) => i !== index);
-    setSteps(updatedSteps);
-  };
-
-  const handleStepChange = (index: number, text: string) => {
-    const updatedSteps = [...steps];
-    updatedSteps[index] = text;
-    setSteps(updatedSteps);
+  const handleItemChange = (
+    index: number,
+    text: string,
+    setItems: React.Dispatch<React.SetStateAction<string[]>>
+  ) => {
+    setItems((prevItems) => {
+      const updatedItems = [...prevItems];
+      updatedItems[index] = text;
+      return updatedItems;
+    });
   };
 
   const isSharingEnabled = () => {
@@ -144,7 +123,8 @@ const CreateCocktail: React.FC = () => {
       description.trim() !== "" &&
       ingredients.every((ingredient) => ingredient.trim() !== "") &&
       quantities.every((quantity) => quantity.trim() !== "") &&
-      steps.every((step) => step.trim() !== "")
+      steps.every((step) => step.trim() !== "") &&
+      tags.every((tag) => tag.trim() !== "")
     );
   };
 
@@ -180,60 +160,35 @@ const CreateCocktail: React.FC = () => {
           onChange={setDescription}
           height={175}
         />
-        <Text style={styles.inputTitle}>Ingredients</Text>
-        <View>
-          {ingredients.map((ingredient, index) => (
-            <StepInput
-              key={index}
-              number={index + 1}
-              value={ingredient}
-              secondaryInput
-              secondaryValue={quantities[index]}
-              onSecondaryChange={(text) => handleQuantityChange(index, text)}
-              onChange={(text) => handleIngredientChange(index, text)}
-              onRemove={() => handleRemoveIngredient(index)}
-            />
-          ))}
+        <DynamicTextInput
+          title="Ingredient"
+          items={ingredients}
+          secondaryItems={quantities}
+          onAdd={handleAddIngredient}
+          onChange={(index, text) =>
+            handleItemChange(index, text, setIngredients)
+          }
+          onSecondaryChange={(index, text) =>
+            handleItemChange(index, text, setQuantities)
+          }
+          onRemove={handleRemoveIngredient}
+        />
 
-          <TouchableOpacity
-            onPress={handleAddIngredient}
-            activeOpacity={0.5}
-            style={styles.addButton}
-          >
-            <AntDesign
-              name="pluscircleo"
-              size={16}
-              color={Colors.light.orange}
-            />
-            <Text style={styles.addText}>Add another ingredient</Text>
-          </TouchableOpacity>
-        </View>
+        <DynamicTextInput
+          title="Step"
+          items={steps}
+          onAdd={() => handleAddItem(setSteps)}
+          onChange={(index, text) => handleItemChange(index, text, setSteps)}
+          onRemove={(index) => handleRemoveItem(index, setSteps)}
+        />
 
-        <Text style={styles.inputTitle}>Steps</Text>
-        <View>
-          {steps.map((step, index) => (
-            <StepInput
-              key={index}
-              number={index + 1}
-              value={step}
-              onChange={(text) => handleStepChange(index, text)}
-              onRemove={() => handleRemoveStep(index)}
-            />
-          ))}
-
-          <TouchableOpacity
-            onPress={handleAddStep}
-            activeOpacity={0.5}
-            style={styles.addButton}
-          >
-            <AntDesign
-              name="pluscircleo"
-              size={16}
-              color={Colors.light.orange}
-            />
-            <Text style={styles.addText}>Add another step</Text>
-          </TouchableOpacity>
-        </View>
+        <DynamicTextInput
+          title="Tag"
+          items={tags}
+          onAdd={() => handleAddItem(setTags)}
+          onChange={(index, text) => handleItemChange(index, text, setTags)}
+          onRemove={(index) => handleRemoveItem(index, setTags)}
+        />
 
         <Pressable
           onPress={handleSharePressed}
