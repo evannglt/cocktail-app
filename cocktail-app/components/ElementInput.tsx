@@ -9,7 +9,7 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 
-interface StepInputProps {
+interface ElementInputProps {
   number: number;
   value: string;
   secondaryInput?: boolean;
@@ -19,7 +19,7 @@ interface StepInputProps {
   onRemove: () => void;
 }
 
-const StepInput: React.FC<StepInputProps> = ({
+const ElementInput: React.FC<ElementInputProps> = ({
   number,
   value,
   secondaryInput = false,
@@ -87,4 +87,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default StepInput;
+export default ElementInput;
