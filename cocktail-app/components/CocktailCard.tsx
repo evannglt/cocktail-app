@@ -9,7 +9,8 @@ interface CocktailCardProps {
   name: string;
   image: number;
   isFavorite: boolean;
-  score: number;
+  score?: number;
+  description?: string;
   numberOfReviews: number;
   cocktailId: number;
 }
@@ -33,6 +34,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   headerContainer: {
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
   },
@@ -50,12 +52,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
     padding: 10,
-    paddingTop: 20,
   },
   stars: {
     flexDirection: "row",
     paddingLeft: 10,
     paddingBottom: 20,
+  },
+  description: {
+    fontSize: 12,
+    paddingHorizontal: 10,
+    paddingBottom: 15,
+    color: "grey",
+    textAlign: "justify",
+    overflow: "hidden",
   },
   favoriteIcon: {
     position: "absolute",
@@ -69,6 +78,7 @@ const CocktailCard: React.FC<CocktailCardProps> = ({
   image,
   isFavorite,
   score,
+  description,
   numberOfReviews,
   cocktailId,
 }) => {
@@ -100,8 +110,16 @@ const CocktailCard: React.FC<CocktailCardProps> = ({
           style={styles.profilePicture}
         />
         <View style={styles.info}>
-          <Text style={styles.name}>{name}</Text>
-          <ScoreStars score={score} numberOfReviews={numberOfReviews} />
+          <Text style={[styles.name, { paddingTop: description ? 15 : 20 }]}>
+            {name}
+          </Text>
+          {score !== undefined ? (
+            <ScoreStars score={score} numberOfReviews={numberOfReviews} />
+          ) : description ? (
+            <Text style={styles.description} numberOfLines={2}>
+              {description}
+            </Text>
+          ) : null}
         </View>
       </View>
       <TouchableOpacity

@@ -51,6 +51,10 @@ const styles = StyleSheet.create({
 export default function Index() {
   const { width } = Dimensions.get("window");
 
+  const handleSearchPressed = (): void => {
+    router.push("/(protected)/search");
+  };
+
   const handleFavoritesPressed = (): void => {
     router.push("/(protected)/favorites");
   };
@@ -65,7 +69,7 @@ export default function Index() {
           padding: 16,
         }}
       >
-        <Pressable onPress={() => console.log("Search pressed")}>
+        <Pressable onPress={handleSearchPressed}>
           <FontAwesome5 name="search" size={24} color="black" />
         </Pressable>
         <Pressable onPress={handleFavoritesPressed}>
