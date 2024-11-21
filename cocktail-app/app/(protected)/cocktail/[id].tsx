@@ -206,6 +206,7 @@ const CocktailRecipe: React.FC = () => {
             <ScoreStars
               score={cocktail.score}
               numberOfReviews={cocktail.numberOfReviews}
+              pressable
             />
           </View>
         </View>
