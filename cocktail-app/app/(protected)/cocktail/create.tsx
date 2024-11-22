@@ -49,6 +49,27 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: Colors.light.lightOrange,
   },
+  toggleAlcoholicContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginVertical: 20,
+  },
+  chipText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+  alcoholicChip: {
+    padding: 10,
+    borderRadius: 8,
+    backgroundColor: Colors.light.pastelRed,
+    marginHorizontal: 10,
+  },
+  nonAlcoholicChip: {
+    padding: 10,
+    borderRadius: 8,
+    backgroundColor: Colors.light.pastelGreen,
+    marginHorizontal: 10,
+  },
   shareButtonContainer: {
     width: "87%",
     backgroundColor: Colors.light.orange,
@@ -76,6 +97,7 @@ const styles = StyleSheet.create({
 
 const CreateCocktail: React.FC = () => {
   const [title, setTitle] = useState("");
+  const [glass, setGlass] = useState("");
   const [description, setDescription] = useState("");
   const [ingredients, setIngredients] = useState<string[]>([""]);
   const [quantities, setQuantities] = useState<string[]>([""]);
@@ -120,6 +142,7 @@ const CreateCocktail: React.FC = () => {
   const isSharingEnabled = () => {
     return (
       title.trim() !== "" &&
+      glass.trim() !== "" &&
       description.trim() !== "" &&
       ingredients.every((ingredient) => ingredient.trim() !== "") &&
       quantities.every((quantity) => quantity.trim() !== "") &&
@@ -130,6 +153,12 @@ const CreateCocktail: React.FC = () => {
 
   const handleSharePressed = async () => {
     router.back();
+  };
+
+  const [isAlcoholic, setIsAlcoholic] = useState(true);
+
+  const handleChipPress = (type: boolean) => {
+    setIsAlcoholic(type);
   };
 
   return (
@@ -151,6 +180,13 @@ const CreateCocktail: React.FC = () => {
           placeholder="Add title..."
           value={title}
           onChange={setTitle}
+        />
+
+        <MultilineTextInputComponent
+          title="Glass Type"
+          placeholder="Add glass type..."
+          value={glass}
+          onChange={setGlass}
         />
 
         <MultilineTextInputComponent
@@ -189,6 +225,24 @@ const CreateCocktail: React.FC = () => {
           onChange={(index, text) => handleItemChange(index, text, setTags)}
           onRemove={(index) => handleRemoveItem(index, setTags)}
         />
+
+        <View style={styles.toggleAlcoholicContainer}>
+          <Pressable
+            onPress={() => handleChipPress(true)}
+            style={[styles.alcoholicChip, { opacity: isAlcoholic ? 1 : 0.5 }]}
+          >
+            <Text style={styles.chipText}>Alcoholic</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => handleChipPress(false)}
+            style={[
+              styles.nonAlcoholicChip,
+              { opacity: !isAlcoholic ? 1 : 0.5 },
+            ]}
+          >
+            <Text style={styles.chipText}>Non-Alcoholic</Text>
+          </Pressable>
+        </View>
 
         <Pressable
           onPress={handleSharePressed}
