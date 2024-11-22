@@ -1,17 +1,52 @@
-Developer / Design „Diary“
- • Examples of developer/design „moments“, about 2 per week, per team
- • Major issues or discussions
- • Design decisions
- • Roughly 6-8 total, about 2-5 sentences each
- • Format, e.g., Markdown or PDF or Webpage
- • Submission, for instance
- • Separate file diary.md or diary.pdf
- • Link labelled „Diary“ in readme.md pointing to online resource, e.g., in Atlassian Confluence
+# Developer / Design Diary
 
-FIGMA Team
-Week 1: Create Login Page, Homepage, Profile Page
-	-Issue: Getting used to Figma 
-Week 2: Other People's Profile, Create Recipe, Favorites Page
-	-Discussion: Add-Ons like Comments and Search by Ingredients
-	-Issue: Might be too complex
-Week 3: Changed the Design for "Select ingredients and Amount" to a Dropdown
+- Examples of developer/design „moments“, about 2 per week, per team
+- Major issues or discussions
+- Design decisions
+- Roughly 6-8 total, about 2-5 sentences each
+- Markdown format
+- Submission, for instance
+- Separate file diary.md
+- Link labelled „Diary“ in readme.md pointing to online resource, e.g., in Atlassian Confluence
+
+### FIGMA & Front-End
+
+#### Week 1
+
+- Created most of the pages from a template. We started with the easier ones: _Login Page_, _Home Page_, _Profile Page_.
+
+- Chose a range of colors; we agreed on an orange theme.
+
+**Issues:**
+
+- Getting used to Figma and understanding how to create frames/components/icons was challenging and time consuming at the beginning.
+
+#### Week 2
+
+- Designed the other pages (_Other People's Profile_, _Create Recipe_, _Favorites Page_).
+
+- Discussed add-ons like _Likes & Comments_ and _Search by Ingredients_ but agreed they were not a priority and would only be designed (and eventually implemented) if time allowed.
+
+- Evaluated the use of Toasters for feedback in the UI, but this was deprioritized and added to the backlog due to project time constraints.
+
+  **Issues:**
+
+- Concerned that implementing all the pages _and_ the add-ons might be too complex within the available time.
+- Small bug with the Scroll View inside a Safe Area View not expanding to the bottom of it. Put in the sprint to-do list.
+- Small bug with the picture of the log-in page with smaller phones. Since then, we test on a simulator of multiple devices to make sure the design is as compatible as possible.
+- Design for the _Other User's recipes_, but no way in the UI to access it. Added a profile picture in the Recipe page of a cocktail.
+
+#### Week 3
+
+- While implementing the _Create a Recipe_ page, we realized that we chose to make the user inputs for quantities and ingredients based on pre-defined options. However, database wise, it's not the case. We thus adjusted the design to include free-form inputs for better usability.
+
+- Explored the `strTags` in the API response and incorporated them as visual Chips on cocktail recipes. Eventually, those Chips should be pressable to search cocktails by tags, but same thing as before, won't be implemented because of the time constraints.
+
+- Realised we completely forgot about the 'Steps' (and later on, when we included the Tags, we forgot about adding them as well) part of the recipe. Decided not to loose time on the Figma and directly implement it as we all had pretty much the same idea in mind for it.
+
+- Also added the number of reviews next to the stars representing the score of a cocktail. Thus, we had to think and implement a way to rate a cocktail. We agreed on pressable stars in the recipe page.
+
+**Issues:**
+
+- Aligning design with real-world data from the API was trickier than anticipated due to inconsistencies in data formatting.
+- Design was adapted multiple times, as well as implementation. For instance, the initial design had subcategories of ingredients (alcohol, juice, garnish), but the API doesn't give that. We decided to simplify the design and remove those subcategories altogether.
