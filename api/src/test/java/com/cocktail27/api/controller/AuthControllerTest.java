@@ -4,7 +4,6 @@ import com.cocktail27.api.dto.APIResponse;
 import com.cocktail27.api.dto.AuthRequest;
 import com.cocktail27.api.dto.AuthResponse;
 import com.cocktail27.api.dto.RegisterRequest;
-import com.cocktail27.api.model.User;
 import com.cocktail27.api.service.AuthService;
 import com.cocktail27.api.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -148,9 +147,7 @@ public class AuthControllerTest {
                                 .email("newuser@example.com")
                                 .build();
 
-                User user = new User();
-
-                when(authService.registerUser(any(RegisterRequest.class))).thenReturn(user);
+                when(authService.registerUser(any(RegisterRequest.class))).thenReturn(true);
 
                 mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/register")
                                 .contentType(MediaType.APPLICATION_JSON)

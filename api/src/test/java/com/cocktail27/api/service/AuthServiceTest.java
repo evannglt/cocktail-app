@@ -8,6 +8,7 @@ import com.cocktail27.api.repository.UserRepository;
 import com.cocktail27.api.security.JwtTokenUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -15,16 +16,21 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
+@ActiveProfiles("test")
 public class AuthServiceTest {
 
     @Autowired
@@ -90,10 +96,9 @@ public class AuthServiceTest {
         when(userRepository.existsByEmail("testuser@example.com")).thenReturn(false);
         when(userRepository.save(any(User.class))).thenReturn(testUser);
 
-        User registeredUser = authService.registerUser(registerRequest);
+        Boolean success = authService.registerUser(registerRequest);
 
-        assertEquals("testuser", registeredUser.getUsername());
-        assertEquals("Test User", registeredUser.getName());
+        assertEquals(true, success);
         verify(userRepository).save(any(User.class));
     }
 
@@ -113,6 +118,15 @@ public class AuthServiceTest {
         RuntimeException exception = assertThrows(RuntimeException.class,
                 () -> authService.registerUser(registerRequest));
         assertEquals("Username is already taken", exception.getMessage());
+    }
+
+    @Test
+    public void testRegisterUser_UsernameContainsSpaces() {
+        registerRequest.setUsername("user name");
+
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> authService.registerUser(registerRequest));
+        assertEquals("Username cannot contain spaces", exception.getMessage());
     }
 
     @Test
@@ -184,15 +198,21 @@ public class AuthServiceTest {
     }
 
     @Test
-    public void testGetPrincipal() {
-        Authentication authentication = mock(Authentication.class);
-        UserDetails userDetails = mock(UserDetails.class);
+    public void testGetCurrentUser() {
+        try (MockedStatic<SecurityContextHolder> mockedStatic = mockStatic(SecurityContextHolder.class)) {
+            Authentication authentication = mock(Authentication.class);
+            UserDetails userDetails = mock(UserDetails.class);
 
-        when(authentication.getPrincipal()).thenReturn(userDetails);
-        when(userDetails.getUsername()).thenReturn("testuser");
+            mockedStatic.when(SecurityContextHolder::getContext)
+                    .thenReturn(mock(SecurityContext.class));
+            when(SecurityContextHolder.getContext().getAuthentication()).thenReturn(authentication);
+            when(authentication.getPrincipal()).thenReturn(userDetails);
+            when(userDetails.getUsername()).thenReturn("testuser");
+            when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
 
-        String principal = authService.getPrincipal(authentication);
+            User currentUser = authService.getCurrentUser();
 
-        assertEquals("testuser", principal);
+            assertEquals("testuser", currentUser.getUsername());
+        }
     }
 }

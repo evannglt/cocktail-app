@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cocktail27.api.dto.AuthRequest;
 import com.cocktail27.api.dto.AuthResponse;
@@ -40,6 +41,7 @@ public class AuthService implements UserDetailsService {
     private JwtTokenUtil jwtTokenUtil;
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
@@ -51,12 +53,16 @@ public class AuthService implements UserDetailsService {
                 authorities);
     }
 
-    public User registerUser(RegisterRequest registerRequest) throws RuntimeException {
+    @Transactional
+    public Boolean registerUser(RegisterRequest registerRequest) throws RuntimeException {
         User user = User.builder()
                 .username(registerRequest.getUsername().toLowerCase())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .name(registerRequest.getName())
                 .email(registerRequest.getEmail().toLowerCase())
+                .imageUrl(
+                        "https://eu.ui-avatars.com/api/?name=" + registerRequest.getName().replace(" ", "+")
+                                + "&background=c36f06&color=fff&size=250")
                 .role("ROLE_USER")
                 .build();
         if (!registerRequest.getPassword().equals(registerRequest.getPasswordConfirmation())) {
@@ -65,15 +71,20 @@ public class AuthService implements UserDetailsService {
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new RuntimeException("Username is already taken");
         }
+        if (user.getUsername().contains(" ")) {
+            throw new RuntimeException("Username cannot contain spaces");
+        }
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("Email is already in use");
         }
         if (!user.getEmail().matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
             throw new RuntimeException("Invalid email format");
         }
-        return userRepository.save(user);
+        userRepository.save(user);
+        return true;
     }
 
+    @Transactional
     public AuthResponse login(AuthRequest authRequest) throws BadCredentialsException {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getUsername().toLowerCase(),
@@ -98,7 +109,15 @@ public class AuthService implements UserDetailsService {
         return jwtTokenUtil.getUsernameFromToken(token);
     }
 
-    public String getPrincipal(Authentication authentication) {
+    public String getUsername(Authentication authentication) {
         return ((UserDetails) authentication.getPrincipal()).getUsername();
+    }
+
+    @Transactional
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = getUsername(authentication);
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
     }
 }
