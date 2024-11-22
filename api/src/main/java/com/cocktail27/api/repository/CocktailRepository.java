@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CocktailRepository extends JpaRepository<Cocktail, Long> {
 
-    List<Cocktail> findByNameContaining(String query);
+    List<Cocktail> findByNameIgnoreCaseContaining(String query);
 }

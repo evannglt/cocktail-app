@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cocktail27.api.dto.CocktailCreationDTO;
 import com.cocktail27.api.dto.CocktailDTO;
 import com.cocktail27.api.dto.CocktailSummaryDTO;
 import com.cocktail27.api.mapper.CocktailMapper;
@@ -42,9 +43,48 @@ public class CocktailService {
         return cocktailRepository.findById(id);
     }
 
-    public Cocktail createCocktail(Cocktail cocktail) {
-        cocktail.getCreatedBy().getMyCocktails().add(cocktail);
-        return cocktailRepository.save(cocktail);
+    public CocktailDTO createCocktail(CocktailCreationDTO cocktailCreationDTO, User creator) throws RuntimeException {
+        if (cocktailCreationDTO.getName().isEmpty()) {
+            throw new RuntimeException("Name is required");
+        }
+        if (cocktailCreationDTO.getDescription().isEmpty()) {
+            throw new RuntimeException("Description is required");
+        }
+        if (cocktailCreationDTO.getSteps().isEmpty()) {
+            throw new RuntimeException("Steps are required");
+        }
+        if (cocktailCreationDTO.getIngredients().isEmpty()) {
+            throw new RuntimeException("Ingredients are required");
+        }
+        if (cocktailCreationDTO.getTags().isEmpty()) {
+            throw new RuntimeException("Tags are required");
+        }
+        if (cocktailCreationDTO.getGlass().isEmpty()) {
+            throw new RuntimeException("Glass is required");
+        }
+        Cocktail cocktail = Cocktail.builder()
+                .name(cocktailCreationDTO.getName())
+                .description(cocktailCreationDTO.getDescription())
+                .steps(cocktailCreationDTO.getSteps())
+                .tags(cocktailCreationDTO.getTags())
+                .imageUrl(
+                        "https://media.istockphoto.com/id/511530047/vector/martini-icon.jpg?s=612x612&w=0&k=20&c=xJ65A9qwzYt7V6JNRwDwnDCr2aOUXa0kmJP6FgeNE54=")
+                .glass(cocktailCreationDTO.getGlass())
+                .isAlcoholic(cocktailCreationDTO.getIsAlcoholic())
+                .createdBy(creator)
+                .build();
+        final Cocktail finalCocktail = cocktail;
+        List<Ingredient> ingredients = cocktailCreationDTO.getIngredients().entrySet().stream()
+                .map(entry -> Ingredient.builder()
+                        .name(entry.getKey())
+                        .quantity(entry.getValue())
+                        .cocktail(finalCocktail)
+                        .build())
+                .toList();
+        cocktail.setIngredients(ingredients);
+        cocktail = cocktailRepository.save(cocktail);
+        creator.getMyCocktails().add(cocktail);
+        return getCocktailDTO(cocktail, creator);
     }
 
     public Cocktail updateCocktail(Cocktail cocktail) throws RuntimeException {
@@ -55,8 +95,9 @@ public class CocktailService {
         }
     }
 
-    public List<Cocktail> searchCocktails(String query) {
-        return cocktailRepository.findByNameContaining(query);
+    public List<CocktailSummaryDTO> searchCocktails(String query, User currentUser) {
+        List<Cocktail> cocktails = cocktailRepository.findByNameIgnoreCaseContaining(query);
+        return getCocktailSummaries(cocktails, currentUser);
     }
 
     public List<CocktailSummaryDTO> getRandomCocktails(User currentUser) {

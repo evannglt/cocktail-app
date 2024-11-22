@@ -27,6 +27,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -57,12 +58,13 @@ public class Cocktail {
     private User createdBy;
 
     @Convert(converter = StringListConverter.class)
-    @Column(name = "steps", nullable = false)
+    @Column(name = "steps", nullable = false, length = 1000)
     @Builder.Default
     private List<String> steps = new ArrayList<>();
 
     @OneToMany(mappedBy = "cocktail", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
+    @ToString.Exclude
     private List<Ingredient> ingredients = new ArrayList<>();
 
     @ManyToMany(mappedBy = "favoriteCocktails")

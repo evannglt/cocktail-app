@@ -1,10 +1,10 @@
 package com.cocktail27.api.service;
 
+import com.cocktail27.api.dto.CocktailCreationDTO;
 import com.cocktail27.api.dto.CocktailDTO;
 import com.cocktail27.api.dto.CocktailSummaryDTO;
 import com.cocktail27.api.dto.RegisterRequest;
 import com.cocktail27.api.model.Cocktail;
-import com.cocktail27.api.model.Ingredient;
 import com.cocktail27.api.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -58,49 +60,43 @@ public class CocktailServiceIntegrationTest {
                                 .build());
                 user = userService.getUserByUsername("user").orElseThrow();
 
-                mojito = Cocktail.builder()
+                CocktailCreationDTO mojitoCreationDTO = CocktailCreationDTO.builder()
                                 .name("Mojito")
                                 .description(
                                                 "A mojito is a cocktail that consists of five ingredients: white rum, sugar, lime juice, soda water, and mint.")
-                                .steps(Arrays.asList("Muddle mint leaves with sugar and lime juice", "Add rum",
-                                                "Add ice", "Top with soda water", "Garnish with mint leaves"))
-                                .createdBy(admin)
-                                .imageUrl("mojito.jpg")
+                                .ingredients(new LinkedHashMap<>(
+                                                Map.of("White rum", "2", "Sugar", "1", "Lime juice", "1",
+                                                                "Soda water", "3", "Mint", "6")))
+                                .steps(Arrays.asList("Muddle mint leaves with sugar and lime juice",
+                                                "Add rum and soda water", "Stir", "Garnish with mint leaves"))
+                                .tags(Arrays.asList("white rum", "sugar", "lime juice", "soda water", "mint"))
                                 .glass("Highball glass")
                                 .isAlcoholic(true)
                                 .build();
 
-                List<Ingredient> ingMojito = Arrays.asList(
-                                Ingredient.builder().name("White rum").quantity("2").cocktail(mojito).build(),
-                                Ingredient.builder().name("Sugar").quantity("1").cocktail(mojito).build(),
-                                Ingredient.builder().name("Lime juice").quantity("1").cocktail(mojito).build(),
-                                Ingredient.builder().name("Soda water").quantity("3").cocktail(mojito).build(),
-                                Ingredient.builder().name("Mint").quantity("6").cocktail(mojito).build());
+                CocktailDTO mojitoDTO = cocktailService.createCocktail(mojitoCreationDTO, admin);
 
-                mojito.setIngredients(ingMojito);
+                mojito = cocktailService.getCocktailById(mojitoDTO.getId()).orElseThrow();
 
-                mojito = cocktailService.createCocktail(mojito);
-
-                margarita = Cocktail.builder()
+                CocktailCreationDTO margaritaCreationDTO = CocktailCreationDTO.builder()
                                 .name("Margarita")
                                 .description(
-                                                "A margarita is a cocktail consisting of tequila, orange liqueur, and lime juice often served with salt on the rim of the glass.")
-                                .steps(Arrays.asList("Shake all ingredients with ice", "Strain into a glass",
-                                                "Garnish with a lime wheel"))
-                                .createdBy(user)
-                                .imageUrl("margarita.jpg")
+                                                "The margarita is a cocktail consisting of tequila, orange liqueur, and lime juice often served with salt on the rim of the glass.")
+                                .ingredients(new LinkedHashMap<>(
+                                                Map.of("Tequila", "2", "Orange liqueur", "1", "Lime juice", "1")))
+                                .steps(Arrays.asList(
+                                                "Rub the rim of the glass with the lime slice to make the salt stick",
+                                                "Take care to moisten only the outer rim and sprinkle the salt on it",
+                                                "The salt should present to the lips of the imbiber and never mix into the cocktail",
+                                                "Shake the other ingredients with ice, then carefully pour into the glass"))
+                                .tags(Arrays.asList("tequila", "orange liqueur", "lime juice", "salt"))
                                 .glass("Margarita glass")
                                 .isAlcoholic(true)
                                 .build();
 
-                List<Ingredient> ingMargarita = Arrays.asList(
-                                Ingredient.builder().name("Tequila").quantity("1/2").cocktail(margarita).build(),
-                                Ingredient.builder().name("Orange liqueur").quantity("1/2").cocktail(margarita).build(),
-                                Ingredient.builder().name("Lime juice").quantity("1").cocktail(margarita).build());
+                CocktailDTO margaritaDTO = cocktailService.createCocktail(margaritaCreationDTO, user);
 
-                margarita.setIngredients(ingMargarita);
-
-                margarita = cocktailService.createCocktail(margarita);
+                margarita = cocktailService.getCocktailById(margaritaDTO.getId()).orElseThrow();
         }
 
         @Test
@@ -111,7 +107,7 @@ public class CocktailServiceIntegrationTest {
 
         @Test
         void shouldSearchCocktailByName() {
-                List<Cocktail> foundCocktails = cocktailService.searchCocktails("Mojito");
+                List<CocktailSummaryDTO> foundCocktails = cocktailService.searchCocktails("Mojito", user);
                 assertThat(foundCocktails).hasSize(1);
                 assertThat(foundCocktails.get(0).getName()).isEqualTo("Mojito");
         }

@@ -30,6 +30,7 @@ public class CocktailMapper {
                 .description(cocktail.getDescription())
                 .ingredients(ingredients)
                 .steps(cocktail.getSteps())
+                .creatorId(cocktail.getCreatedBy().getId())
                 .isFavorite(isFavorite)
                 .isAlcoholic(cocktail.getIsAlcoholic())
                 .rating(rating)

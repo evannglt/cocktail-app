@@ -1,6 +1,7 @@
 package com.cocktail27.api.service;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
@@ -15,10 +16,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.cocktail27.api.dto.CocktailCreationDTO;
 import com.cocktail27.api.dto.CocktailDTO;
 import com.cocktail27.api.dto.CocktailSummaryDTO;
 import com.cocktail27.api.model.Cocktail;
@@ -45,13 +46,13 @@ class CocktailServiceTest {
     private AuthService authService;
 
     private User mockUser;
+    private User mockUser2;
     private List<Cocktail> mockCocktails;
     private Cocktail mockCocktail;
+    private Cocktail mockCocktail2;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-
         mockUser = User.builder()
                 .id(1L)
                 .username("testuser")
@@ -74,7 +75,29 @@ class CocktailServiceTest {
                 .createdBy(mockUser)
                 .build();
 
-        mockCocktails = Arrays.asList(mockCocktail);
+        mockUser2 = User.builder()
+                .id(2L)
+                .username("testuser2")
+                .favoriteCocktails(new ArrayList<>())
+                .myCocktails(new ArrayList<>())
+                .build();
+
+        mockCocktail2 = Cocktail.builder()
+                .id(2L)
+                .name("Test Cocktail 2")
+                .ingredients(Arrays.asList(
+                        Ingredient.builder().name("Ingredient1").quantity("1 oz").build(),
+                        Ingredient.builder().name("Ingredient2").quantity("2 oz").build()))
+                .steps(Arrays.asList("Step 1", "Step 2", "Step 3", "Step 4"))
+                .description("Test Description")
+                .isAlcoholic(true)
+                .imageUrl("test.jpg")
+                .tags(Arrays.asList("Tag1", "Tag2"))
+                .ratings(Collections.singleton(CocktailRating.builder().rating(5L).build()))
+                .createdBy(mockUser2)
+                .build();
+
+        mockCocktails = Arrays.asList(mockCocktail, mockCocktail2);
     }
 
     @Test
@@ -110,12 +133,23 @@ class CocktailServiceTest {
 
     @Test
     void testCreateCocktail() {
-        when(cocktailRepository.save(mockCocktail)).thenReturn(mockCocktail);
+        when(cocktailRepository.save(any())).thenReturn(mockCocktail);
 
-        Cocktail result = cocktailService.createCocktail(mockCocktail);
+        CocktailCreationDTO cocktailCreationDTO = CocktailCreationDTO.builder()
+                .name("Test Cocktail")
+                .description("Test Description")
+                .ingredients(new LinkedHashMap<>(Map.of("Ingredient1", "1 oz", "Ingredient2", "2 oz")))
+                .steps(Arrays.asList("Step 1", "Step 2", "Step 3", "Step 4"))
+                .tags(Arrays.asList("Tag1", "Tag2"))
+                .glass("Test Glass")
+                .isAlcoholic(true)
+                .build();
 
-        assertEquals(mockCocktail, result);
-        verify(cocktailRepository).save(mockCocktail);
+        CocktailDTO result = cocktailService.createCocktail(cocktailCreationDTO, mockUser);
+
+        assertEquals(result.getName(), mockCocktail.getName());
+        assertEquals(result.getId(), mockCocktail.getId());
+        verify(cocktailRepository).save(any());
     }
 
     @Test
@@ -140,12 +174,12 @@ class CocktailServiceTest {
     @Test
     void testSearchCocktails() {
         String query = "Test";
-        when(cocktailRepository.findByNameContaining(query)).thenReturn(mockCocktails);
+        when(cocktailRepository.findByNameIgnoreCaseContaining(query)).thenReturn(Arrays.asList(mockCocktails.get(0)));
 
-        List<Cocktail> result = cocktailService.searchCocktails(query);
+        List<CocktailSummaryDTO> result = cocktailService.searchCocktails(query, mockUser);
 
-        assertEquals(mockCocktails, result);
-        verify(cocktailRepository).findByNameContaining(query);
+        assertEquals(mockCocktail.getId(), result.get(0).getId());
+        verify(cocktailRepository).findByNameIgnoreCaseContaining(query);
     }
 
     @Test
@@ -154,13 +188,13 @@ class CocktailServiceTest {
 
         List<CocktailSummaryDTO> result = cocktailService.getRandomCocktails(mockUser);
 
-        assertEquals(1, result.size());
+        assertEquals(mockCocktails.size(), result.size());
         verify(cocktailRepository).findAll();
     }
 
     @Test
     void testGetMyCocktails() {
-        mockUser.setMyCocktails(mockCocktails);
+        mockUser.setMyCocktails(Arrays.asList(mockCocktail));
 
         List<CocktailSummaryDTO> result = cocktailService.getMyCocktails(mockUser);
 
@@ -170,7 +204,7 @@ class CocktailServiceTest {
 
     @Test
     void testGetMyFavoriteCocktails() {
-        mockUser.setFavoriteCocktails(mockCocktails);
+        mockUser.setFavoriteCocktails(Arrays.asList(mockCocktail));
 
         List<CocktailSummaryDTO> result = cocktailService.getMyFavoriteCocktails(mockUser);
 
@@ -181,7 +215,7 @@ class CocktailServiceTest {
     @Test
     void testGetCocktailsOfUser_Found() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));
-        mockUser.setMyCocktails(mockCocktails);
+        mockUser.setMyCocktails(Arrays.asList(mockCocktail));
 
         List<CocktailSummaryDTO> result = cocktailService.getCocktailsOfUser(1L, mockUser);
 
