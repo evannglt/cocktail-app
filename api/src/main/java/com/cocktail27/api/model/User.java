@@ -42,7 +42,7 @@ public class User {
 
     private String imageUrl;
 
-    @OneToMany(mappedBy = "createdBy")
+    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("name")
     @Builder.Default
     private List<Cocktail> myCocktails = new ArrayList<>();
@@ -53,7 +53,7 @@ public class User {
     @Builder.Default
     private List<Cocktail> favoriteCocktails = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private Set<CocktailRating> ratings = new HashSet<>();
 

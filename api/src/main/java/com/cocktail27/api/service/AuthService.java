@@ -60,9 +60,7 @@ public class AuthService implements UserDetailsService {
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .name(registerRequest.getName())
                 .email(registerRequest.getEmail().toLowerCase())
-                .imageUrl(
-                        "https://eu.ui-avatars.com/api/?name=" + registerRequest.getName().replace(" ", "+")
-                                + "&background=c36f06&color=fff&size=250")
+                .imageUrl(PfpService.getPfpURL(registerRequest.getName()))
                 .role("ROLE_USER")
                 .build();
         if (!registerRequest.getPassword().equals(registerRequest.getPasswordConfirmation())) {

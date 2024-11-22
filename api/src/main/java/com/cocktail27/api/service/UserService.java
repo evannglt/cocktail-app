@@ -3,11 +3,13 @@ package com.cocktail27.api.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cocktail27.api.dto.UserDTO;
+import com.cocktail27.api.dto.UserUpdateDTO;
 import com.cocktail27.api.model.User;
 import com.cocktail27.api.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +19,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public List<User> getAllUsers() {
         return (List<User>) userRepository.findAll();
@@ -30,18 +35,30 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
-    public User updateUser(UserDTO userDTO) throws RuntimeException {
-        Optional<User> optionalUser = userRepository.findById(userDTO.getId());
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            user.setUsername(userDTO.getUsername());
-            user.setName(userDTO.getName());
-            user.setEmail(userDTO.getEmail());
-            user.setRole(userDTO.getRole());
-            user.setImageUrl(userDTO.getImageUrl());
-            return userRepository.save(user);
+    public User updateUser(User currentUser, UserUpdateDTO userUpdateDTO) throws RuntimeException {
+        if (userUpdateDTO.getPassword() != null) {
+            if (!userUpdateDTO.getPassword().equals(userUpdateDTO.getPasswordConfirmation())) {
+                throw new RuntimeException("Passwords do not match");
+            } else {
+                currentUser.setPassword(passwordEncoder.encode(userUpdateDTO.getPassword()));
+            }
         }
-        throw new RuntimeException("User does not exist");
+        if (!currentUser.getUsername().equals(userUpdateDTO.getUsername())
+                && userRepository.existsByUsername(userUpdateDTO.getUsername())) {
+            throw new RuntimeException("Username is already taken");
+        }
+        if (!currentUser.getEmail().equals(userUpdateDTO.getEmail())
+                && userRepository.existsByEmail(userUpdateDTO.getEmail())) {
+            throw new RuntimeException("Email is already in use");
+        }
+        if (!userUpdateDTO.getEmail().matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+            throw new RuntimeException("Invalid email format");
+        }
+        currentUser.setUsername(userUpdateDTO.getUsername());
+        currentUser.setName(userUpdateDTO.getName());
+        currentUser.setEmail(userUpdateDTO.getEmail());
+        currentUser.setImageUrl(PfpService.getPfpURL(userUpdateDTO.getName()));
+        return currentUser;
     }
 
     public void deleteUser(Long id) throws RuntimeException {

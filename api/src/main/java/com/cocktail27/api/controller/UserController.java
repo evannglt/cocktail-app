@@ -2,6 +2,7 @@ package com.cocktail27.api.controller;
 
 import com.cocktail27.api.dto.APIResponse;
 import com.cocktail27.api.dto.UserDTO;
+import com.cocktail27.api.dto.UserUpdateDTO;
 import com.cocktail27.api.mapper.UserMapper;
 import com.cocktail27.api.model.User;
 import com.cocktail27.api.service.AuthService;
@@ -44,9 +45,21 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserUpdateDTO userUpdateDTO) {
         try {
-            User updatedUser = userService.updateUser(userDTO);
+            User user = userService.getUserById(id).orElseThrow(() -> new RuntimeException("User not found"));
+            User updatedUser = userService.updateUser(user, userUpdateDTO);
+            return new ResponseEntity<>(UserMapper.userToDTO(updatedUser), HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(new APIResponse(e.getMessage()), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<?> updateAuthenticatedUser(@RequestBody UserUpdateDTO userUpdateDTO) {
+        try {
+            User currentUser = authService.getCurrentUser();
+            User updatedUser = userService.updateUser(currentUser, userUpdateDTO);
             return new ResponseEntity<>(UserMapper.userToDTO(updatedUser), HttpStatus.OK);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(new APIResponse(e.getMessage()), HttpStatus.NOT_FOUND);
@@ -57,6 +70,17 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         try {
             userService.deleteUser(id);
+            return new ResponseEntity<>(new APIResponse("User deleted"), HttpStatus.NO_CONTENT);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(new APIResponse(e.getMessage()), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<?> deleteAuthenticatedUser() {
+        try {
+            User user = authService.getCurrentUser();
+            userService.deleteUser(user.getId());
             return new ResponseEntity<>(new APIResponse("User deleted"), HttpStatus.NO_CONTENT);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(new APIResponse(e.getMessage()), HttpStatus.NOT_FOUND);
