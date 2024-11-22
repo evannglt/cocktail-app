@@ -9,7 +9,11 @@
 - Separate file diary.md
 - Link labelled „Diary“ in readme.md pointing to online resource, e.g., in Atlassian Confluence
 
-### FIGMA & Front-End
+### Design (Figma) & Front-End
+
+Here's the link to the [figma](https://www.figma.com/design/q6rvJkeqv7Oey1XEYGqQT1/Cocktail-Recipes-App?node-id=0-1&m=dev&t=FulShdGOdrEr1YUN-1) (some changes were directly implemented and not (re)designed for time constraints reasons).
+
+Here's the link to the [JIRA](https://tcd-team-cocktail27.atlassian.net/jira/software/projects/COC/boards/1).
 
 #### Week 1
 
