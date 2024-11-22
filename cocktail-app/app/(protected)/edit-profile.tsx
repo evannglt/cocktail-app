@@ -59,6 +59,12 @@ const styles = StyleSheet.create({
     fontWeight: 800,
     color: Colors.light.orange,
   },
+  separator: {
+    height: 1,
+    backgroundColor: Colors.light.grey,
+    width: "85%",
+    marginVertical: 20,
+  },
   saveChangesButtonContainer: {
     width: "87%",
     backgroundColor: Colors.light.orange,
@@ -82,19 +88,27 @@ const styles = StyleSheet.create({
   },
 });
 
+const user = {
+  name: "User Name",
+  username: "user1234",
+  email: "test@email.com",
+};
+
 const EditProfile: React.FC = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [name, setName] = useState(user.name);
+  const [username, setUsername] = useState(user.username);
+  const [email, setEmail] = useState(user.email);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const isSaveChangesEnabled = () => {
-    return (
-      name.trim() !== "" &&
-      email.trim() !== "" &&
-      password.trim() !== "" &&
-      confirmPassword.trim() !== ""
-    );
+    const isProfileInfoValid =
+      name.trim() !== "" && username.trim() !== "" && email.trim() !== "";
+    const isPasswordValid =
+      (password.trim() === "" && confirmPassword.trim() === "") ||
+      (password.trim() !== "" && confirmPassword.trim() !== "");
+
+    return isProfileInfoValid && isPasswordValid;
   };
 
   const handleSaveChanges = async () => {
@@ -125,10 +139,18 @@ const EditProfile: React.FC = () => {
           onChange={setName}
         />
         <TextInputComponent
+          placeholder="Username"
+          value={username}
+          onChange={setUsername}
+        />
+        <TextInputComponent
           placeholder="Email"
           value={email}
           onChange={setEmail}
         />
+
+        <View style={styles.separator} />
+
         <TextInputComponent
           placeholder="Password"
           value={password}
