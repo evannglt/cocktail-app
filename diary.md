@@ -24,6 +24,7 @@ Here's the link to the [JIRA](https://tcd-team-cocktail27.atlassian.net/jira/sof
 **Issues:**
 
 - Getting used to Figma and understanding how to create frames/components/icons was challenging and time consuming at the beginning.
+- We set up the project 1 day before Expo switched to SDK 52, which prevented us from using Expo Go. We had to update the project to SDK 52 and fix some issues with the dependencies.
 
 #### Week 2
 
@@ -39,6 +40,8 @@ Here's the link to the [JIRA](https://tcd-team-cocktail27.atlassian.net/jira/sof
 - Small bug with the Scroll View inside a Safe Area View not expanding to the bottom of it. Put in the sprint to-do list.
 - Small bug with the picture of the log-in page with smaller phones. Since then, we test on a simulator of multiple devices to make sure the design is as compatible as possible.
 - Design for the _Other User's recipes_, but no way in the UI to access it. Added a profile picture in the Recipe page of a cocktail.
+- For the CI/CD pipeline, we had some troubles with the startup actions of the Spring Boot application. We found a solution by using profiles in the test classes and removing the startup actions when testing. Moreover, we had to use a specific configuration using **H2** (in memory databse) and not the PostgreSQL database when testing, as this would throw errors when being executed in the Gitlab runner.
+- Concerning tests, some annotations from Spring Boot were crashing the tests. We had to remove them and use the **@SpringBootTest** annotation instead.
 
 #### Week 3
 
@@ -54,3 +57,4 @@ Here's the link to the [JIRA](https://tcd-team-cocktail27.atlassian.net/jira/sof
 
 - Aligning design with real-world data from the API was trickier than anticipated due to inconsistencies in data formatting.
 - Design was adapted multiple times, as well as implementation. For instance, the initial design had subcategories of ingredients (alcohol, juice, garnish), but the API doesn't give that. We decided to simplify the design and remove those subcategories altogether.
+- We had some issues with the JPA entities, because of their relationships, and chose to use the **@Transactional** annotation as well as **cascades** to solve them. This was a good solution, but we had to be careful with the use of it, as it could lead to some problems in the future.
