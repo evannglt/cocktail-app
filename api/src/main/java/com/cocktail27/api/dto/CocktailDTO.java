@@ -16,6 +16,8 @@ public class CocktailDTO {
     private String description;
     private Map<String, String> ingredients;
     private List<String> steps;
+    private List<String> tags;
+    private String glass;
     private Boolean isFavorite;
     private Boolean isAlcoholic;
     private Long creatorId;

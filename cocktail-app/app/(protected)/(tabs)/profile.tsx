@@ -1,4 +1,4 @@
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { logout } from "@/services/AuthService";
 import { Colors } from "@/constants/Colors";
 import {
@@ -11,6 +11,9 @@ import {
   View,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { useCallback, useState } from "react";
+import { UserDTO } from "@/interfaces/responses/user";
+import { getCurrentUser } from "@/services/UserService";
 
 const styles = StyleSheet.create({
   container: { flex: 1, alignItems: "center" },
@@ -91,6 +94,8 @@ const styles = StyleSheet.create({
 });
 
 export default function Profile() {
+  const [user, setUser] = useState<UserDTO | null>(null);
+
   const handleLogOutPress = async () => {
     logout().then(() => router.replace("/(auth)/log-in"));
   };
@@ -103,15 +108,18 @@ export default function Profile() {
     router.push("/settings");
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      getCurrentUser().then((user) => setUser(user));
+    }, [])
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.subcontainer}>
         <Text style={styles.title}>My Profile</Text>
-        <Image
-          style={styles.image}
-          source={require("@/assets/images/profile2.png")}
-        />
-        <Text style={styles.name}>user1234</Text>
+        <Image style={styles.image} source={{ uri: user?.imageUrl }} />
+        <Text style={styles.name}>{user?.username}</Text>
         <TouchableOpacity
           onPress={handleEditProfilePress}
           activeOpacity={0.5}

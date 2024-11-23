@@ -10,6 +10,9 @@ import {
 } from "react-native";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
+import { CocktailDTO } from "@/interfaces/responses/cocktail";
+import { useEffect, useState } from "react";
+import { getCocktailById } from "@/services/CocktailService";
 
 const styles = StyleSheet.create({
   container: {
@@ -69,25 +72,18 @@ const styles = StyleSheet.create({
 
 const CocktailSteps: React.FC = () => {
   const cocktailId = parseInt(useLocalSearchParams<{ id: string }>().id);
+  const [cocktail, setCocktail] = useState<CocktailDTO | null>(null);
 
-  const mockCocktail = {
-    steps: [
-      "Add vanilla vodka, Passoã (or any other passion fruit liqueur), passion fruit purée, lime juice and vanilla syrup to a shaker filled with ice.",
-      "Secure the lid and shake vigorously for about 15 seconds.",
-      "Strain the mixture into a chilled martini to remove any ice or pulp.",
-      "Garnish with half a passion fruit on top of it.",
-      "Enjoy!",
-    ],
-    glass: "Cocktail glass",
-  };
+  useEffect(() => {
+    getCocktailById(cocktailId).then((cocktail) => {
+      setCocktail(cocktail);
+    });
+  }, [cocktailId]);
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ position: "relative" }}>
-        <Image
-          style={styles.image}
-          source={require("@/assets/images/martini.jpg")}
-        />
+        <Image style={styles.image} source={{ uri: cocktail?.imageUrl }} />
 
         <Pressable onPress={() => router.back()} style={styles.arrowIcon}>
           <AntDesign name="arrowleft" size={30} color={Colors.light.grey} />
@@ -103,9 +99,9 @@ const CocktailSteps: React.FC = () => {
             style={styles.glassIcon}
             color={Colors.light.pastelOrange}
           />
-          <Text style={styles.glassText}>{mockCocktail.glass}</Text>
+          <Text style={styles.glassText}>{cocktail?.glass}</Text>
         </View>
-        {mockCocktail.steps.map((step, index) => (
+        {cocktail?.steps.map((step, index) => (
           <View key={index} style={styles.stepContainer}>
             <Text style={styles.stepNumber}>{index + 1}</Text>
             <Text style={styles.text}>{step}</Text>

@@ -1,5 +1,5 @@
-import { router, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useCallback, useState } from "react";
 import {
   Pressable,
   Image,
@@ -9,6 +9,7 @@ import {
   ScrollView,
   SafeAreaView,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import {
   AntDesign,
@@ -19,6 +20,12 @@ import {
 import { Chip } from "react-native-paper";
 import { Colors } from "@/constants/Colors";
 import ScoreStars from "@/components/ScoreStars";
+import { CocktailDTO } from "@/interfaces/responses/cocktail";
+import {
+  getCocktailById,
+  rateCocktail,
+  toggleCocktailFavorites,
+} from "@/services/CocktailService";
 
 const styles = StyleSheet.create({
   container: {
@@ -107,13 +114,20 @@ const styles = StyleSheet.create({
 
 const CocktailRecipe: React.FC = () => {
   const cocktailId = parseInt(useLocalSearchParams<{ id: string }>().id);
+  const [cocktail, setCocktail] = useState<CocktailDTO | null>(null);
 
-  const [isFavorite, setIsFavorite] = useState(false);
-
-  const alcoholic = true;
+  useFocusEffect(
+    useCallback(() => {
+      getCocktailById(cocktailId).then((cocktailResult) => {
+        setCocktail(cocktailResult);
+      });
+    }, [cocktailId])
+  );
 
   const onFavoriteToggle = () => {
-    setIsFavorite(!isFavorite);
+    toggleCocktailFavorites(cocktailId).then((isFavorite) => {
+      cocktail && setCocktail({ ...cocktail, isFavorite });
+    });
   };
 
   const handleStartMixingPress = (cocktailId: number) => {
@@ -134,28 +148,25 @@ const CocktailRecipe: React.FC = () => {
     });
   };
 
-  const cocktail = {
-    photo: require("@/assets/images/martini.jpg"),
-    score: 4.5,
-    name: "Mocktail Delight",
-    description:
-      "The Martini blends smooth vanilla vodka with fresh passion fruit, balanced by a hint of lime. It's a vibrant, tropical treat made to impress. Ideal for special occasions or a night in, this cocktail is both bold and sophisticated. The Pornstar Martini blends smooth vanilla vodka with fresh passion fruit, balanced by a hint of lime. It's a vibrant, tropical treat made to impress. Ideal for special occasions or a night in, this cocktail is both bold and sophisticated.",
-    ingredients: {
-      "Vanilla Vodka": "25 mL",
-      Passoa: "15 mL",
-      "Passion Fruit purée": "30 mL",
-      "Lime juice": "15 mL",
-      "Vanilla Syrup": "10 mL",
-      "Fresh passion fruit": "1/2",
-    },
-    tags: ["IPA", "Sour", "Fruity", "ContemporaryClassic"],
-    numberOfReviews: 234,
+  const handleStarPress = (starNumber: number) => {
+    Alert.alert(
+      "Review",
+      `Do you want to leave a review of ${starNumber}/5 for this cocktail?`,
+      [
+        { text: "Yes", onPress: () => rateCocktail(cocktailId, starNumber) },
+        {
+          text: "No",
+          onPress: () => console.log("No review"),
+          style: "cancel",
+        },
+      ]
+    );
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ position: "relative" }}>
-        <Image style={styles.image} source={cocktail.photo} />
+        <Image style={styles.image} source={{ uri: cocktail?.imageUrl }} />
 
         <Pressable onPress={() => router.back()} style={styles.closeIcon}>
           <AntDesign name="close" size={30} color={Colors.light.grey} />
@@ -165,10 +176,10 @@ const CocktailRecipe: React.FC = () => {
       <View style={styles.headerContainer}>
         <TouchableOpacity
           activeOpacity={0.5}
-          onPress={() => handleUserPress(1)}
+          onPress={() => handleUserPress(cocktail?.creatorId || 0)}
         >
           <Image
-            source={require("@/assets/images/profile.jpg")}
+            source={{ uri: cocktail?.creatorImageUrl }}
             style={{
               width: 40,
               height: 40,
@@ -189,9 +200,9 @@ const CocktailRecipe: React.FC = () => {
               alignItems: "center",
             }}
           >
-            <Text style={styles.title}>{cocktail.name}</Text>
+            <Text style={styles.title}>{cocktail?.name}</Text>
             <TouchableOpacity onPress={onFavoriteToggle} activeOpacity={0.5}>
-              {isFavorite ? (
+              {cocktail?.isFavorite ? (
                 <FontAwesome name="heart" size={20} color="red" />
               ) : (
                 <FontAwesome5
@@ -204,16 +215,16 @@ const CocktailRecipe: React.FC = () => {
           </View>
           <View style={styles.scoreContainer}>
             <ScoreStars
-              score={cocktail.score}
-              numberOfReviews={cocktail.numberOfReviews}
-              pressable
+              score={cocktail?.rating || 0}
+              numberOfReviews={cocktail?.numberOfRatings || 0}
+              onStarPress={handleStarPress}
             />
           </View>
         </View>
       </View>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.tagsContainer}>
-          {cocktail.tags.map((tag, index) => (
+          {cocktail?.tags.map((tag, index) => (
             <Chip
               key={index}
               style={{
@@ -226,7 +237,7 @@ const CocktailRecipe: React.FC = () => {
               {tag}
             </Chip>
           ))}
-          {alcoholic ? (
+          {cocktail?.isAlcoholic ? (
             <Chip
               style={{
                 backgroundColor: Colors.light.pastelRed,
@@ -251,10 +262,10 @@ const CocktailRecipe: React.FC = () => {
           )}
         </View>
 
-        <Text style={styles.description}>{cocktail.description}</Text>
+        <Text style={styles.description}>{cocktail?.description}</Text>
 
         <Text style={styles.ingredientsTitle}>Ingredients</Text>
-        {Object.entries(cocktail.ingredients).map(
+        {Object.entries(cocktail?.ingredients || {}).map(
           ([ingredient, amount]: [string, string], index: number) => (
             <Text key={index} style={styles.ingredientList}>
               • {amount} {ingredient}

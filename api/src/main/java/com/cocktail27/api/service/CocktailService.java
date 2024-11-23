@@ -96,7 +96,7 @@ public class CocktailService {
     }
 
     public List<CocktailSummaryDTO> searchCocktails(String query, User currentUser) {
-        List<Cocktail> cocktails = cocktailRepository.findByNameIgnoreCaseContaining(query);
+        List<Cocktail> cocktails = cocktailRepository.findByNameIgnoreCaseContaining(query).stream().limit(15).toList();
         return getCocktailSummaries(cocktails, currentUser);
     }
 
@@ -105,7 +105,7 @@ public class CocktailService {
 
         Collections.shuffle(cocktails);
         List<Cocktail> randomCocktails = cocktails.stream()
-                .limit(5)
+                .limit(15)
                 .collect(Collectors.toList());
 
         return getCocktailSummaries(randomCocktails, currentUser);
@@ -200,7 +200,7 @@ public class CocktailService {
         return getCocktailDTO(cocktail, currentUser);
     }
 
-    private List<CocktailSummaryDTO> getCocktailSummaries(List<Cocktail> cocktails, User currentUser) {
+    public List<CocktailSummaryDTO> getCocktailSummaries(List<Cocktail> cocktails, User currentUser) {
         return cocktails.stream()
                 .map(cocktail -> {
                     List<CocktailRating> ratings = cocktail.getRatings().stream().toList();

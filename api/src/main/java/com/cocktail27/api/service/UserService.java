@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cocktail27.api.dto.UserUpdateDTO;
+import com.cocktail27.api.model.Cocktail;
 import com.cocktail27.api.model.User;
 import com.cocktail27.api.repository.UserRepository;
 
@@ -62,11 +63,16 @@ public class UserService {
     }
 
     public void deleteUser(Long id) throws RuntimeException {
-        Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()) {
-            userRepository.deleteById(id);
-            return;
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User does not exist"));
+
+        for (Cocktail cocktail : user.getMyCocktails()) {
+            List<User> favoriteBy = cocktail.getFavoriteBy();
+            favoriteBy.stream().map(User::getFavoriteCocktails)
+                    .forEach(favoriteCocktails -> favoriteCocktails.remove(cocktail));
+            favoriteBy.clear();
         }
-        throw new RuntimeException("User does not exist");
+
+        userRepository.delete(user);
     }
 }

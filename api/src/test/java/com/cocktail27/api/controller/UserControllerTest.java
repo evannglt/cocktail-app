@@ -129,7 +129,8 @@ public class UserControllerTest {
 
         ResponseEntity<?> response = userController.deleteUser(1L);
 
-        assertEquals(204, response.getStatusCode().value());
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals("User deleted", ((APIResponse) response.getBody()).getMessage());
     }
 
     @Test
@@ -172,7 +173,7 @@ public class UserControllerTest {
 
         ResponseEntity<?> response = userController.deleteAuthenticatedUser();
 
-        assertEquals(204, response.getStatusCode().value());
+        assertEquals(200, response.getStatusCode().value());
     }
 
     @Test

@@ -157,7 +157,8 @@ class UserServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));
 
         assertDoesNotThrow(() -> userService.deleteUser(1L));
-        verify(userRepository).deleteById(1L);
+        verify(userRepository).findById(1L);
+        verify(userRepository).delete(any());
     }
 
     @Test

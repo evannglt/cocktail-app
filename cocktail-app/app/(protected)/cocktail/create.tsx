@@ -14,6 +14,7 @@ import { Colors } from "@/constants/Colors";
 import MultilineTextInputComponent from "@/components/MultilineTextInputComponent";
 import KeyboardAvoidingScrollLayout from "@/layout/KeyboardAvoidingScrollLayout";
 import DynamicTextInput from "@/components/DynamicTextInput";
+import { createCocktail } from "@/services/CocktailService";
 
 const styles = StyleSheet.create({
   container: {
@@ -152,7 +153,17 @@ const CreateCocktail: React.FC = () => {
   };
 
   const handleSharePressed = async () => {
-    router.back();
+    createCocktail({
+      name: title,
+      description,
+      ingredients: Object.fromEntries(
+        ingredients.map((ingredient, index) => [ingredient, quantities[index]])
+      ),
+      steps,
+      tags,
+      glass,
+      isAlcoholic,
+    }).then(() => router.back());
   };
 
   const [isAlcoholic, setIsAlcoholic] = useState(true);

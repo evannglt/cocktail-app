@@ -29,6 +29,8 @@ public class CocktailMapper {
                 .name(cocktail.getName())
                 .description(cocktail.getDescription())
                 .ingredients(ingredients)
+                .glass(cocktail.getGlass())
+                .tags(cocktail.getTags())
                 .steps(cocktail.getSteps())
                 .creatorId(cocktail.getCreatedBy().getId())
                 .isFavorite(isFavorite)

@@ -70,7 +70,7 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         try {
             userService.deleteUser(id);
-            return new ResponseEntity<>(new APIResponse("User deleted"), HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(new APIResponse("User deleted"), HttpStatus.OK);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(new APIResponse(e.getMessage()), HttpStatus.NOT_FOUND);
         }
@@ -81,7 +81,7 @@ public class UserController {
         try {
             User user = authService.getCurrentUser();
             userService.deleteUser(user.getId());
-            return new ResponseEntity<>(new APIResponse("User deleted"), HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(new APIResponse("User deleted"), HttpStatus.OK);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(new APIResponse(e.getMessage()), HttpStatus.NOT_FOUND);
         }

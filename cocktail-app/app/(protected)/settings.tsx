@@ -13,6 +13,8 @@ import { router } from "expo-router";
 import FeatherIcon from "@expo/vector-icons/Feather";
 import { AntDesign } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
+import { deleteUser } from "@/services/UserService";
+import { logout } from "@/services/AuthService";
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -117,6 +119,12 @@ export default function Settings() {
     pushNotifications: false,
     themeMode: false,
   });
+
+  const handleDelete = async () => {
+    await deleteUser();
+    await logout();
+    router.replace("/(auth)/log-in");
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#f8f8f8" }}>
@@ -254,12 +262,7 @@ export default function Settings() {
                 { alignItems: "center" },
               ]}
             >
-              <TouchableOpacity
-                onPress={() => {
-                  // handle onPress
-                }}
-                style={styles.row}
-              >
+              <TouchableOpacity onPress={handleDelete} style={styles.row}>
                 <Text style={[styles.rowLabel, styles.rowLabelDelete]}>
                   Delete Account
                 </Text>

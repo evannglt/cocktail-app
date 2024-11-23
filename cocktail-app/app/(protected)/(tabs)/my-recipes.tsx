@@ -6,9 +6,12 @@ import {
   ScrollView,
   SafeAreaView,
 } from "react-native";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { FontAwesome5 } from "@expo/vector-icons";
 import MyCocktailCard from "@/components/MyCocktailCard";
+import { useCallback, useState } from "react";
+import { CocktailSummaryDTO } from "@/interfaces/responses/cocktail";
+import { getMyCocktails } from "@/services/CocktailService";
 
 const styles = StyleSheet.create({
   title: {
@@ -19,6 +22,14 @@ const styles = StyleSheet.create({
 });
 
 export default function MyRecipes() {
+  const [cocktails, setCocktails] = useState<CocktailSummaryDTO[]>([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      getMyCocktails().then((cocktails) => setCocktails(cocktails));
+    }, [])
+  );
+
   const handleSearchPressed = (): void => {
     router.push("/(protected)/search");
   };
@@ -51,13 +62,13 @@ export default function MyRecipes() {
           flexGrow: 1,
         }}
       >
-        {[...Array(10)].map((_, index) => (
+        {cocktails.map((item) => (
           <MyCocktailCard
-            name="Pornstar Martini"
-            image={require("@/assets/images/welcomeImageCocktails.png")}
-            description="The Pornstar Martini blends smooth vanilla vodka with fresh passion fruit, balanced by a hint of lime. It's a vibrant, tropical treat made to impress. Ideal for special occasions or a night in, this cocktail is both bold and sophisticated."
-            cocktailId={index}
-            key={index}
+            name={item.name}
+            imageUrl={item.imageUrl}
+            description={item.description}
+            cocktailId={item.id}
+            key={item.id}
           />
         ))}
       </ScrollView>

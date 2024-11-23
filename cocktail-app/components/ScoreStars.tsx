@@ -6,13 +6,13 @@ import PressableOrNotStar from "@/components/PressableOrNotStar";
 interface ScoreStarsProps {
   score: number;
   numberOfReviews: number;
-  pressable?: boolean;
+  onStarPress?: (cocktailId: number) => void;
 }
 
 const ScoreStars: React.FC<ScoreStarsProps> = ({
   score,
   numberOfReviews,
-  pressable = false,
+  onStarPress,
 }) => {
   const stars = [];
   const fullStars = Math.floor(score);
@@ -25,7 +25,7 @@ const ScoreStars: React.FC<ScoreStarsProps> = ({
           key={i}
           iconName="star"
           starNumber={i + 1}
-          pressable={pressable}
+          onPress={onStarPress ? () => onStarPress(i + 1) : undefined}
         />
       );
     } else if (i === fullStars && hasHalfStar) {
@@ -34,7 +34,7 @@ const ScoreStars: React.FC<ScoreStarsProps> = ({
           key={i}
           iconName="star-half-o"
           starNumber={i + 1}
-          pressable={pressable}
+          onPress={onStarPress ? () => onStarPress(i + 1) : undefined}
         />
       );
     } else {
@@ -43,7 +43,7 @@ const ScoreStars: React.FC<ScoreStarsProps> = ({
           key={i}
           iconName="star-o"
           starNumber={i + 1}
-          pressable={pressable}
+          onPress={onStarPress ? () => onStarPress(i + 1) : undefined}
         />
       );
     }
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   reviewNumber: {
     marginLeft: 10,
     fontSize: 14,
-    color: Colors.light.grey,
+    color: Colors.light.text,
     textAlign: "justify",
   },
 });

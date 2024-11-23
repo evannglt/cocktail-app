@@ -1,8 +1,13 @@
-export interface UserResponse {
-  id: string;
+export interface UserDTO {
+  id: number;
   username: string;
-  password: string;
   name: string;
   email: string;
   role: string;
+  imageUrl: string;
+  myCocktails: number[];
+  favoriteCocktails: number[];
+  ratings: number[];
+  createdAt: string;
+  updatedAt: string;
 }

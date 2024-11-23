@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Image,
   StyleSheet,
@@ -12,6 +12,8 @@ import { AntDesign } from "@expo/vector-icons";
 import KeyboardAvoidingScrollLayout from "@/layout/KeyboardAvoidingScrollLayout";
 import { Colors } from "@/constants/Colors";
 import TextInputComponent from "@/components/TextInputComponent";
+import { getCurrentUser, updateUser } from "@/services/UserService";
+import { logout } from "@/services/AuthService";
 
 const styles = StyleSheet.create({
   container: {
@@ -88,16 +90,11 @@ const styles = StyleSheet.create({
   },
 });
 
-const user = {
-  name: "User Name",
-  username: "user1234",
-  email: "test@email.com",
-};
-
 const EditProfile: React.FC = () => {
-  const [name, setName] = useState(user.name);
-  const [username, setUsername] = useState(user.username);
-  const [email, setEmail] = useState(user.email);
+  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -111,8 +108,30 @@ const EditProfile: React.FC = () => {
     return isProfileInfoValid && isPasswordValid;
   };
 
+  useEffect(() => {
+    getCurrentUser().then((currentUser) => {
+      if (currentUser) {
+        setName(currentUser.name);
+        setUsername(currentUser.username);
+        setEmail(currentUser.email);
+        setImageUrl(currentUser.imageUrl);
+      }
+    });
+  }, []);
+
   const handleSaveChanges = async () => {
-    router.back();
+    const success =
+      (await updateUser({
+        name,
+        username,
+        email,
+        password: password || undefined,
+        passwordConfirmation: confirmPassword || undefined,
+      })) !== null;
+    if (success) {
+      await logout();
+      router.navigate("/(auth)/log-in");
+    }
   };
 
   return (
@@ -125,10 +144,7 @@ const EditProfile: React.FC = () => {
           <Text style={styles.title}>Edit Profile</Text>
         </View>
 
-        <Image
-          style={styles.image}
-          source={require("@/assets/images/profile2.png")}
-        />
+        <Image style={styles.image} source={{ uri: imageUrl || undefined }} />
         <Pressable onPress={() => console.log("Change picture clicked")}>
           <Text style={styles.changePicture}>Change Picture</Text>
         </Pressable>

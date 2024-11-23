@@ -15,16 +15,22 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cocktail27.api.dto.CocktailCreationDTO;
 import com.cocktail27.api.dto.CocktailDTO;
 import com.cocktail27.api.dto.CocktailSummaryDTO;
+import com.cocktail27.api.dto.ProfileDTO;
+import com.cocktail27.api.dto.SearchCocktailsDTO;
 import com.cocktail27.api.model.Cocktail;
 import com.cocktail27.api.model.User;
 import com.cocktail27.api.service.AuthService;
 import com.cocktail27.api.service.CocktailService;
+import com.cocktail27.api.service.UserService;
 
 @RestController
 @RequestMapping("/api/cocktails")
 public class CocktailController {
     @Autowired
     private CocktailService cocktailService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private AuthService authService;
@@ -52,7 +58,14 @@ public class CocktailController {
         try {
             User user = authService.getCurrentUser();
             List<CocktailSummaryDTO> cocktailSummaryDTOs = cocktailService.getCocktailsOfUser(id, user);
-            return ResponseEntity.ok(cocktailSummaryDTOs);
+            User creator = userService.getUserById(id)
+                    .orElseThrow(() -> new Exception("User not found"));
+            ProfileDTO profileDTO = ProfileDTO.builder()
+                    .cocktails(cocktailSummaryDTOs)
+                    .username(creator.getUsername())
+                    .imageUrl(creator.getImageUrl())
+                    .build();
+            return ResponseEntity.ok(profileDTO);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
@@ -71,10 +84,18 @@ public class CocktailController {
         }
     }
 
-    @GetMapping("/search/{query}")
-    public ResponseEntity<List<CocktailSummaryDTO>> searchCocktails(@PathVariable String query) {
+    @PostMapping("/search")
+    public ResponseEntity<List<CocktailSummaryDTO>> searchCocktails(
+            @RequestBody SearchCocktailsDTO searchCocktailsDTO) {
         User user = authService.getCurrentUser();
-        return ResponseEntity.ok(cocktailService.searchCocktails(query, user));
+        if (searchCocktailsDTO.getQuery().isEmpty()) {
+            List<Cocktail> cocktails = cocktailService.getAllCocktails().stream()
+                    .limit(15)
+                    .toList();
+
+            return ResponseEntity.ok(cocktailService.getCocktailSummaries(cocktails, user));
+        }
+        return ResponseEntity.ok(cocktailService.searchCocktails(searchCocktailsDTO.getQuery(), user));
     }
 
     @PostMapping("/create")
