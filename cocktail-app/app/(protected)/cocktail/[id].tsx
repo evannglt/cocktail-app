@@ -153,7 +153,14 @@ const CocktailRecipe: React.FC = () => {
       "Review",
       `Do you want to leave a review of ${starNumber}/5 for this cocktail?`,
       [
-        { text: "Yes", onPress: () => rateCocktail(cocktailId, starNumber) },
+        {
+          text: "Yes",
+          onPress: async () => {
+            await rateCocktail(cocktailId, starNumber);
+            const updatedCocktail = await getCocktailById(cocktailId);
+            setCocktail(updatedCocktail);
+          },
+        },
         {
           text: "No",
           onPress: () => console.log("No review"),
