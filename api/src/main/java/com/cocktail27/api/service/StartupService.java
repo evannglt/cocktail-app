@@ -10,8 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cocktail27.api.dto.CocktailCreationDTO;
 import com.cocktail27.api.dto.CocktailDTO;
 import com.cocktail27.api.dto.RegisterRequest;
-import com.cocktail27.api.mapper.UserMapper;
-import com.cocktail27.api.model.Cocktail;
 import com.cocktail27.api.model.User;
 
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +27,13 @@ public class StartupService {
         @Autowired
         private CocktailService cocktailService;
 
+        @Autowired
+        private ExternalAPIService externalAPIService;
+
         public void init() {
+                if (userService.getUserByUsername("admin").isPresent()) {
+                        return;
+                }
                 log.info("Creating users");
                 authService.registerUser(RegisterRequest.builder()
                                 .username("admin")
@@ -51,7 +55,17 @@ public class StartupService {
 
                 User user = userService.getUserByUsername("user").get();
 
-                log.info("Creating some cocktails");
+                authService.registerUser(RegisterRequest.builder()
+                                .username("external")
+                                .name("External User")
+                                .email("external@ext.com")
+                                .password("external")
+                                .passwordConfirmation("external")
+                                .build());
+
+                User external = userService.getUserByUsername("external").get();
+
+                log.info("Populating database with mock cocktails");
 
                 CocktailCreationDTO cocktailCreation1 = CocktailCreationDTO.builder()
                                 .name("Mojito")
@@ -89,30 +103,12 @@ public class StartupService {
 
                 cocktailService.createCocktail(cocktailCreation2, user);
 
-                log.info("Checking that the user and cocktails were created");
-                admin = userService.getUserByUsername("admin").get();
-                log.info("User: {}", UserMapper.userToDTO(admin));
-                user = userService.getUserByUsername("user").get();
-                log.info("User: {}", UserMapper.userToDTO(user));
+                log.info("Populating database from external API");
+                externalAPIService.populateDatabase(external);
+                log.info("Database populated");
 
-                log.info("Cocktail: {}", cocktailDTO1);
-
-                log.info("User adds admin's cocktail as a favorite");
                 cocktailService.toggleFavoriteCocktail(cocktailDTO1.getId(), user);
-
-                log.info("Checking that the favorite cocktail was added");
-                user = userService.getUserByUsername("user").get();
-                log.info("User: {}", UserMapper.userToDTO(user));
-
-                log.info("User rates admin's cocktail");
                 cocktailService.rateCocktail(cocktailDTO1.getId(), 5L, user);
-
-                log.info("User rates admin's cocktail again");
                 cocktailService.rateCocktail(cocktailDTO1.getId(), 4L, user);
-
-                log.info("Checking that the rating was added");
-                Cocktail cocktail1 = cocktailService.getCocktailById(cocktailDTO1.getId()).get();
-                user = userService.getUserByUsername("user").get();
-                log.info("Cocktail: {}", cocktailService.getCocktailDTO(cocktail1, user));
         }
 }

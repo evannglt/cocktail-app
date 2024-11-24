@@ -259,7 +259,7 @@ const CreateCocktail: React.FC = () => {
           title="Ingredient"
           items={ingredients}
           secondaryItems={quantities}
-          onAdd={handleAddIngredient}
+          onAdd={ingredients.length < 15 ? handleAddIngredient : undefined}
           onChange={(index, text) =>
             handleItemChange(index, text, setIngredients)
           }

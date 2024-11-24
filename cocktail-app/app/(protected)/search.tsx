@@ -6,6 +6,7 @@ import {
   TextInput,
   StyleSheet,
   View,
+  Text,
   ScrollView,
 } from "react-native";
 import { router, useFocusEffect } from "expo-router";
@@ -46,7 +47,9 @@ export default function Search() {
 
   useFocusEffect(
     useCallback(() => {
-      searchCocktailsByName(query).then((cocktails) => setCocktails(cocktails));
+      if (query === "") {
+        searchCocktailsByName("").then((cocktails) => setCocktails(cocktails));
+      }
     }, [query])
   );
 
@@ -93,6 +96,11 @@ export default function Search() {
             key={item.id}
           />
         ))}
+        {cocktails.length === 0 && query !== "" && (
+          <View style={{ alignItems: "center", marginTop: 20 }}>
+            <Text style={{ fontSize: 18 }}>No results found</Text>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

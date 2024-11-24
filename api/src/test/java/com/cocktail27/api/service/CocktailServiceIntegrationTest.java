@@ -106,13 +106,6 @@ public class CocktailServiceIntegrationTest {
         }
 
         @Test
-        void shouldSearchCocktailByName() {
-                List<CocktailSummaryDTO> foundCocktails = cocktailService.searchCocktails("Mojito", user);
-                assertThat(foundCocktails).hasSize(1);
-                assertThat(foundCocktails.get(0).getName()).isEqualTo("Mojito");
-        }
-
-        @Test
         void shouldToggleFavoriteCocktail() {
                 // Add Mojito to user's favorites
                 CocktailDTO updatedMojito = cocktailService.toggleFavoriteCocktail(mojito.getId(), user);

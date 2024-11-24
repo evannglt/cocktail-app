@@ -2,6 +2,7 @@ package com.cocktail27.api.controller;
 
 import java.util.List;
 
+import com.cocktail27.api.service.ExternalAPIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,9 @@ import com.cocktail27.api.service.UserService;
 public class CocktailController {
     @Autowired
     private CocktailService cocktailService;
+
+    @Autowired
+    private ExternalAPIService externalAPIService;
 
     @Autowired
     private UserService userService;
@@ -95,7 +99,7 @@ public class CocktailController {
 
             return ResponseEntity.ok(cocktailService.getCocktailSummaries(cocktails, user));
         }
-        return ResponseEntity.ok(cocktailService.searchCocktails(searchCocktailsDTO.getQuery(), user));
+        return ResponseEntity.ok(externalAPIService.searchCocktails(searchCocktailsDTO.getQuery(), user));
     }
 
     @PostMapping("/create")

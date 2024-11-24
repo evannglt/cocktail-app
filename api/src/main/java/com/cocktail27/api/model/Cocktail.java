@@ -58,7 +58,7 @@ public class Cocktail {
     private User createdBy;
 
     @Convert(converter = StringListConverter.class)
-    @Column(name = "steps", nullable = false, length = 1000)
+    @Column(name = "steps", nullable = false, length = 2000)
     @Builder.Default
     private List<String> steps = new ArrayList<>();
 

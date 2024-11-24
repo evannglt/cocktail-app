@@ -1,9 +1,13 @@
 package com.cocktail27.api.mapper;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 
+import com.cocktail27.api.dto.CocktailCreationDTO;
 import com.cocktail27.api.dto.CocktailDTO;
 import com.cocktail27.api.dto.CocktailSummaryDTO;
+import com.cocktail27.api.dto.ExternalCocktailDTO;
 import com.cocktail27.api.model.Cocktail;
 
 public class CocktailMapper {
@@ -39,6 +43,24 @@ public class CocktailMapper {
                 .numberOfRatings(numberOfRatings)
                 .imageUrl(cocktail.getImageUrl())
                 .creatorImageUrl(cocktail.getCreatedBy().getImageUrl())
+                .build();
+    }
+
+    public static CocktailCreationDTO ExternalCocktailDTOtoCocktailCreationDTO(ExternalCocktailDTO externalCocktailDTO) {
+        return CocktailCreationDTO.builder()
+                .externalId(externalCocktailDTO.getIdDrink())
+                .name(externalCocktailDTO.getStrDrink())
+                .description(externalCocktailDTO.getStrCategory())
+                .imageUrl(externalCocktailDTO.getStrDrinkThumb())
+                .ingredients(externalCocktailDTO.getIngredientsAndMeasures())
+                .steps(externalCocktailDTO.getStrInstructions() != null
+                        ? Arrays.asList(externalCocktailDTO.getStrInstructions().split("\\."))
+                        : Collections.emptyList())
+                .tags(externalCocktailDTO.getStrTags() != null
+                        ? Arrays.asList(externalCocktailDTO.getStrTags().split(","))
+                        : Collections.emptyList())
+                .glass(externalCocktailDTO.getStrGlass())
+                .isAlcoholic("Alcoholic".equals(externalCocktailDTO.getStrAlcoholic()))
                 .build();
     }
 }

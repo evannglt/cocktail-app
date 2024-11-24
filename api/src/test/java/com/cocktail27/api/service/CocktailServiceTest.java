@@ -172,17 +172,6 @@ class CocktailServiceTest {
     }
 
     @Test
-    void testSearchCocktails() {
-        String query = "Test";
-        when(cocktailRepository.findByNameIgnoreCaseContaining(query)).thenReturn(Arrays.asList(mockCocktails.get(0)));
-
-        List<CocktailSummaryDTO> result = cocktailService.searchCocktails(query, mockUser);
-
-        assertEquals(mockCocktail.getId(), result.get(0).getId());
-        verify(cocktailRepository).findByNameIgnoreCaseContaining(query);
-    }
-
-    @Test
     void testGetRandomCocktails() {
         when(cocktailRepository.findAll()).thenReturn(mockCocktails);
 

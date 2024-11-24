@@ -231,19 +231,21 @@ const CocktailRecipe: React.FC = () => {
       </View>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.tagsContainer}>
-          {cocktail?.tags.map((tag, index) => (
-            <Chip
-              key={index}
-              style={{
-                backgroundColor: Colors.light.orange,
-                margin: 2,
-                borderRadius: 15,
-              }}
-              textStyle={{ color: "white" }}
-            >
-              {tag}
-            </Chip>
-          ))}
+          {cocktail?.tags
+            .filter((tag) => tag !== "null")
+            .map((tag, index) => (
+              <Chip
+                key={index}
+                style={{
+                  backgroundColor: Colors.light.orange,
+                  margin: 2,
+                  borderRadius: 15,
+                }}
+                textStyle={{ color: "white" }}
+              >
+                {tag}
+              </Chip>
+            ))}
           {cocktail?.isAlcoholic ? (
             <Chip
               style={{

@@ -38,6 +38,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
     flex: 1,
   },
+  noCocktailText: {
+    textAlign: "center",
+    fontSize: 18,
+    alignSelf: "center",
+    marginTop: 50,
+  },
 });
 
 export default function Favorites() {
@@ -67,25 +73,29 @@ export default function Favorites() {
           flexGrow: 1,
         }}
       >
-        {favoriteCocktails.map((item) => (
-          <CocktailCard
-            name={item.name}
-            imageUrl={item.imageUrl}
-            creatorImageUrl={item.creatorImageUrl}
-            onLikePress={() =>
-              handleLikeCocktail(
-                item.id,
-                favoriteCocktails,
-                setFavoriteCocktails
-              )
-            }
-            score={item.rating}
-            numberOfReviews={item.numberOfRatings}
-            isFavorite={item.isFavorite}
-            cocktailId={item.id}
-            key={item.id}
-          />
-        ))}
+        {favoriteCocktails.length === 0 ? (
+          <Text style={styles.noCocktailText}>No favorite cocktail yet</Text>
+        ) : (
+          favoriteCocktails.map((item) => (
+            <CocktailCard
+              name={item.name}
+              imageUrl={item.imageUrl}
+              creatorImageUrl={item.creatorImageUrl}
+              onLikePress={() =>
+                handleLikeCocktail(
+                  item.id,
+                  favoriteCocktails,
+                  setFavoriteCocktails
+                )
+              }
+              score={item.rating}
+              numberOfReviews={item.numberOfRatings}
+              isFavorite={item.isFavorite}
+              cocktailId={item.id}
+              key={item.id}
+            />
+          ))
+        )}
       </ScrollView>
     </SafeAreaView>
   );

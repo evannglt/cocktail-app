@@ -13,7 +13,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CocktailCreationDTO {
+    private String externalId;
     private String name;
+
+    @Builder.Default
+    private String imageUrl = "https://media.istockphoto.com/id/511530047/vector/martini-icon.jpg?s=612x612&w=0&k=20&c=xJ65A9qwzYt7V6JNRwDwnDCr2aOUXa0kmJP6FgeNE54=";
+    
     private String description;
     private Map<String, String> ingredients;
     private List<String> steps;

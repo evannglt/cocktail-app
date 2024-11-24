@@ -36,7 +36,7 @@ public class CocktailService {
     private UserRepository userRepository;
 
     public List<Cocktail> getAllCocktails() {
-        return (List<Cocktail>) cocktailRepository.findAll();
+        return cocktailRepository.findAll();
     }
 
     public Optional<Cocktail> getCocktailById(Long id) {
@@ -63,12 +63,12 @@ public class CocktailService {
             throw new RuntimeException("Glass is required");
         }
         Cocktail cocktail = Cocktail.builder()
+                .cocktailDBId(cocktailCreationDTO.getExternalId() != null ? Long.parseLong(cocktailCreationDTO.getExternalId()) : null)
                 .name(cocktailCreationDTO.getName())
                 .description(cocktailCreationDTO.getDescription())
                 .steps(cocktailCreationDTO.getSteps())
                 .tags(cocktailCreationDTO.getTags())
-                .imageUrl(
-                        "https://media.istockphoto.com/id/511530047/vector/martini-icon.jpg?s=612x612&w=0&k=20&c=xJ65A9qwzYt7V6JNRwDwnDCr2aOUXa0kmJP6FgeNE54=")
+                .imageUrl(cocktailCreationDTO.getImageUrl())
                 .glass(cocktailCreationDTO.getGlass())
                 .isAlcoholic(cocktailCreationDTO.getIsAlcoholic())
                 .createdBy(creator)
@@ -93,11 +93,6 @@ public class CocktailService {
         } else {
             throw new RuntimeException("Cocktail not found");
         }
-    }
-
-    public List<CocktailSummaryDTO> searchCocktails(String query, User currentUser) {
-        List<Cocktail> cocktails = cocktailRepository.findByNameIgnoreCaseContaining(query).stream().limit(15).toList();
-        return getCocktailSummaries(cocktails, currentUser);
     }
 
     public List<CocktailSummaryDTO> getRandomCocktails(User currentUser) {
