@@ -65,10 +65,16 @@ frontend:
 To start the containers, run the following command:
 
 ```shell
-docker compose up frontend
+docker compose up backend -d
 ```
 
-Because the frontend depends on the backend, and the backend depends on the database, the containers will be started in the correct order. 
+Running this command will automatically start the backend container in detached mode, as well as its dependencies (PostgreSQL DB and Ollama API).
+Keep in mind that because the backend depends on a Ollama API, it may pull the model the first time you run it.
+Once it is fully running (see the logs **Model pulled successfully**), you can start the frontend container:
+
+```shell
+docker compose up frontend
+```
 
 This command should display the logs of the frontend container, that contain a **QR code** that can be scanned to run the app on a mobile device using the **Expo Go** app.
 

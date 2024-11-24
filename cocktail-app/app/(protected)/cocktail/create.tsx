@@ -8,6 +8,7 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { AntDesign, FontAwesome6 } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
@@ -15,6 +16,7 @@ import MultilineTextInputComponent from "@/components/MultilineTextInputComponen
 import KeyboardAvoidingScrollLayout from "@/layout/KeyboardAvoidingScrollLayout";
 import DynamicTextInput from "@/components/DynamicTextInput";
 import { createCocktail } from "@/services/CocktailService";
+import { generateCocktailAI } from "@/services/AIService";
 
 const styles = StyleSheet.create({
   container: {
@@ -105,6 +107,25 @@ const CreateCocktail: React.FC = () => {
   const [steps, setSteps] = useState<string[]>([""]);
   const [tags, setTags] = useState<string[]>([""]);
 
+  const [isGenerating, setIsGenerating] = useState(false);
+  const isGenerateAIDisabled = title.trim() === "" || isGenerating;
+
+  const handleGenerateRecipe = async () => {
+    setIsGenerating(true);
+    generateCocktailAI(title).then((response) => {
+      setIsGenerating(false);
+      if (response) {
+        setTitle(response.name);
+        setGlass(response.glass);
+        setDescription(response.description);
+        setIngredients(Object.keys(response.ingredients));
+        setQuantities(Object.values(response.ingredients));
+        setSteps(response.steps);
+        setTags(response.tags);
+      }
+    });
+  };
+
   const handleAddIngredient = () => {
     handleAddItem(setIngredients);
     handleAddItem(setQuantities);
@@ -185,13 +206,40 @@ const CreateCocktail: React.FC = () => {
         <TouchableOpacity activeOpacity={0.5} style={styles.image}>
           <AntDesign name="plus" size={45} color={Colors.light.orange} />
         </TouchableOpacity>
-
         <MultilineTextInputComponent
           title="Title"
           placeholder="Add title..."
           value={title}
           onChange={setTitle}
         />
+        <Pressable
+          onPress={handleGenerateRecipe}
+          style={styles.shareButtonContainer}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <FontAwesome6
+              name="wand-magic-sparkles"
+              size={17}
+              color={"white"}
+            />
+            <Text
+              style={[
+                styles.shareButtonText,
+                { opacity: isGenerateAIDisabled ? 0.5 : 1 },
+              ]}
+              disabled={isGenerateAIDisabled}
+            >
+              Generate the recipe
+            </Text>
+            {isGenerating && <ActivityIndicator color="white" />}
+          </View>
+        </Pressable>
 
         <MultilineTextInputComponent
           title="Glass Type"
