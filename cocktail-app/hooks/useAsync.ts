@@ -8,6 +8,11 @@ export enum AsyncStatus {
   ERROR = "ERROR",
 }
 
+interface useAsyncProps<T> {
+  defaultState: T | null;
+  asyncFunction: () => Promise<T>;
+}
+
 interface UseAsyncReturn<T> {
   data: T | null;
   setData: React.Dispatch<React.SetStateAction<T | null>>;
@@ -17,8 +22,8 @@ interface UseAsyncReturn<T> {
   refresh: () => Promise<void>;
 }
 
-const useAsync = <T>(asyncFunction: () => Promise<T>): UseAsyncReturn<T> => {
-  const [data, setData] = useState<T | null>(null);
+const useAsync = <T>({ defaultState = null, asyncFunction }: useAsyncProps<T>): UseAsyncReturn<T> => {
+  const [data, setData] = useState<T | null>(defaultState);
   const [status, setStatus] = useState<AsyncStatus>(AsyncStatus.IDLE);
   const [error, setError] = useState<Error | null>(null);
 

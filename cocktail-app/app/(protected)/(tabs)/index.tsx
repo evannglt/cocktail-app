@@ -1,4 +1,4 @@
-import { router, useFocusEffect } from "expo-router";
+import { router } from "expo-router";
 import {
   Dimensions,
   Image,
@@ -8,15 +8,17 @@ import {
   Text,
   View,
   ScrollView,
+  RefreshControl,
 } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import CocktailCard from "@/components/CocktailCard";
 import { Carousel } from "react-native-basic-carousel";
 import { CocktailSummaryDTO } from "@/interfaces/responses/cocktail";
-import { useCallback, useState } from "react";
+import { useEffect } from "react";
 import { getRandomCocktails } from "@/services/CocktailService";
 import { handleLikeCocktail } from "@/utils/cocktail";
+import useAsync, { AsyncStatus } from "@/hooks/useAsync";
 
 const styles = StyleSheet.create({
   title: {
@@ -29,17 +31,20 @@ const styles = StyleSheet.create({
 });
 
 export default function Index() {
-  const [randomCocktails, setRandomCocktails] = useState<CocktailSummaryDTO[]>(
-    []
-  );
+  const {
+    data: randomCocktails,
+    setData: setRandomCocktails,
+    execute,
+    status,
+    refresh,
+  } = useAsync<CocktailSummaryDTO[]>({
+    defaultState: [],
+    asyncFunction: getRandomCocktails,
+  });
 
-  useFocusEffect(
-    useCallback(() => {
-      getRandomCocktails().then((cocktails) => {
-        setRandomCocktails(cocktails);
-      });
-    }, [])
-  );
+  useEffect(() => {
+    execute();
+  }, []);
 
   const { width } = Dimensions.get("window");
 
@@ -71,7 +76,7 @@ export default function Index() {
 
       <View style={{ width: width, height: 300 }}>
         <Carousel
-          data={randomCocktails.slice(0, 5)}
+          data={randomCocktails ? randomCocktails.slice(0, 5) : []}
           renderItem={({
             item,
             index,
@@ -99,8 +104,14 @@ export default function Index() {
         contentContainerStyle={{
           flexGrow: 1,
         }}
+        refreshControl={
+          <RefreshControl
+            refreshing={status === AsyncStatus.REFRESHING}
+            onRefresh={refresh}
+          />
+        }
       >
-        {randomCocktails.map((item) => (
+        {randomCocktails?.map((item) => (
           <CocktailCard
             name={item.name}
             imageUrl={item.imageUrl}
