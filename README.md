@@ -120,8 +120,13 @@ docker compose down
 
 We decided on not doing any Front-End tests because of the short time constraints.
 
-However, we did Back-End tests using the Mockito framework.
-The only thing needed to run them is to click "Run all tests" when clicking on the 'tests' folder.
+However, we did Back-End tests.
+We unit tested most of the endpoints and the services using the mockito framework, and for specific services with crucial functionality we also ran integration tests.
+The only thing needed to run this command line in the `api` folder:
+
+```shell
+./mvnw clean test
+```
 
 ## Video
 
