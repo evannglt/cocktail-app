@@ -43,7 +43,7 @@ class Api {
       headers.set("Content-Type", "application/json");
     }
 
-    const token = await AsyncStorage.getItem(AUTH_TOKEN_KEY);
+    const token = await this.getAuthToken();
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
     }
@@ -103,7 +103,7 @@ class Api {
   }
 
   public async getAuthToken(): Promise<string | null> {
-    return AsyncStorage.getItem(AUTH_TOKEN_KEY);
+    return await AsyncStorage.getItem(AUTH_TOKEN_KEY);
   }
 
   public async clearAuthToken(): Promise<void> {

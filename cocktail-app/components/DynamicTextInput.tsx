@@ -8,7 +8,7 @@ interface DynamicTextInputProps {
   title: string;
   items: string[];
   secondaryItems?: string[];
-  onAdd: () => void;
+  onAdd?: () => void;
   onChange: (index: number, text: string) => void;
   onSecondaryChange?: (index: number, text: string) => void;
   onRemove: (index: number) => void;

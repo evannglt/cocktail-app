@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Image,
   StyleSheet,
@@ -12,6 +12,8 @@ import { AntDesign } from "@expo/vector-icons";
 import KeyboardAvoidingScrollLayout from "@/layout/KeyboardAvoidingScrollLayout";
 import { Colors } from "@/constants/Colors";
 import TextInputComponent from "@/components/TextInputComponent";
+import { getCurrentUser, updateUser } from "@/services/UserService";
+import { logout } from "@/services/AuthService";
 
 const styles = StyleSheet.create({
   container: {
@@ -59,6 +61,12 @@ const styles = StyleSheet.create({
     fontWeight: 800,
     color: Colors.light.orange,
   },
+  separator: {
+    height: 1,
+    backgroundColor: Colors.light.grey,
+    width: "85%",
+    marginVertical: 20,
+  },
   saveChangesButtonContainer: {
     width: "87%",
     backgroundColor: Colors.light.orange,
@@ -84,21 +92,46 @@ const styles = StyleSheet.create({
 
 const EditProfile: React.FC = () => {
   const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const isSaveChangesEnabled = () => {
-    return (
-      name.trim() !== "" &&
-      email.trim() !== "" &&
-      password.trim() !== "" &&
-      confirmPassword.trim() !== ""
-    );
+    const isProfileInfoValid =
+      name.trim() !== "" && username.trim() !== "" && email.trim() !== "";
+    const isPasswordValid =
+      (password.trim() === "" && confirmPassword.trim() === "") ||
+      (password.trim() !== "" && confirmPassword.trim() !== "");
+
+    return isProfileInfoValid && isPasswordValid;
   };
 
+  useEffect(() => {
+    getCurrentUser().then((currentUser) => {
+      if (currentUser) {
+        setName(currentUser.name);
+        setUsername(currentUser.username);
+        setEmail(currentUser.email);
+        setImageUrl(currentUser.imageUrl);
+      }
+    });
+  }, []);
+
   const handleSaveChanges = async () => {
-    router.back();
+    const success =
+      (await updateUser({
+        name,
+        username,
+        email,
+        password: password || undefined,
+        passwordConfirmation: confirmPassword || undefined,
+      })) !== null;
+    if (success) {
+      await logout();
+      router.navigate("/(auth)/log-in");
+    }
   };
 
   return (
@@ -111,10 +144,7 @@ const EditProfile: React.FC = () => {
           <Text style={styles.title}>Edit Profile</Text>
         </View>
 
-        <Image
-          style={styles.image}
-          source={require("@/assets/images/profile2.png")}
-        />
+        <Image style={styles.image} source={{ uri: imageUrl || undefined }} />
         <Pressable onPress={() => console.log("Change picture clicked")}>
           <Text style={styles.changePicture}>Change Picture</Text>
         </Pressable>
@@ -125,10 +155,18 @@ const EditProfile: React.FC = () => {
           onChange={setName}
         />
         <TextInputComponent
+          placeholder="Username"
+          value={username}
+          onChange={setUsername}
+        />
+        <TextInputComponent
           placeholder="Email"
           value={email}
           onChange={setEmail}
         />
+
+        <View style={styles.separator} />
+
         <TextInputComponent
           placeholder="Password"
           value={password}

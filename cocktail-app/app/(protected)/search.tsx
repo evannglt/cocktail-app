@@ -1,20 +1,20 @@
 import { AntDesign } from "@expo/vector-icons";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   TouchableOpacity,
   SafeAreaView,
   TextInput,
   StyleSheet,
   View,
+  Text,
   ScrollView,
 } from "react-native";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import CocktailCard from "@/components/CocktailCard";
 import { Colors } from "@/constants/Colors";
-
-interface SearchProps {
-  onRemove: () => void;
-}
+import { searchCocktailsByName } from "@/services/CocktailService";
+import { CocktailSummaryDTO } from "@/interfaces/responses/cocktail";
+import { handleLikeCocktail } from "@/utils/cocktail";
 
 const styles = StyleSheet.create({
   container: {
@@ -41,12 +41,21 @@ const styles = StyleSheet.create({
   },
 });
 
-const Search: React.FC<SearchProps> = ({ onRemove }) => {
-  const [searchQuery, setSearchQuery] = useState("");
+export default function Search() {
+  const [query, setQuery] = useState("");
+  const [cocktails, setCocktails] = useState<CocktailSummaryDTO[]>([]);
 
-  const handleSearchChange = async (query: string) => {
-    setSearchQuery(query);
-    // Make API call to update list of cocktail
+  useFocusEffect(
+    useCallback(() => {
+      if (query === "") {
+        searchCocktailsByName("").then((cocktails) => setCocktails(cocktails));
+      }
+    }, [query])
+  );
+
+  const handleSearchChange = async (text: string) => {
+    setQuery(text);
+    searchCocktailsByName(text).then((cocktails) => setCocktails(cocktails));
   };
 
   return (
@@ -63,7 +72,7 @@ const Search: React.FC<SearchProps> = ({ onRemove }) => {
         <TextInput
           style={styles.inputContainer}
           placeholder="Search for cocktails"
-          value={searchQuery}
+          value={query}
           onChangeText={handleSearchChange}
         />
       </View>
@@ -72,22 +81,27 @@ const Search: React.FC<SearchProps> = ({ onRemove }) => {
           flexGrow: 1,
         }}
       >
-        {[...Array(5)].map((_, index) => (
+        {cocktails.map((item) => (
           <CocktailCard
-            name="Pornstar Martini"
-            image={require("@/assets/images/welcomeImageCocktails.png")}
-            description={
-              "A delicious cocktail with a hint of passion fruit and vanilla. Perfect for a night out with friends."
+            name={item.name}
+            imageUrl={item.imageUrl}
+            creatorImageUrl={item.creatorImageUrl}
+            description={item.description}
+            onLikePress={() =>
+              handleLikeCocktail(item.id, cocktails, setCocktails)
             }
-            numberOfReviews={34}
-            isFavorite={false}
-            cocktailId={index}
-            key={index}
+            numberOfReviews={item.numberOfRatings}
+            isFavorite={item.isFavorite}
+            cocktailId={item.id}
+            key={item.id}
           />
         ))}
+        {cocktails.length === 0 && query !== "" && (
+          <View style={{ alignItems: "center", marginTop: 20 }}>
+            <Text style={{ fontSize: 18 }}>No results found</Text>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
-};
-
-export default Search;
+}

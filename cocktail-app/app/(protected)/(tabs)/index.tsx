@@ -8,35 +8,17 @@ import {
   Text,
   View,
   ScrollView,
+  RefreshControl,
 } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import CocktailCard from "@/components/CocktailCard";
 import { Carousel } from "react-native-basic-carousel";
-import { Photos } from "@/types/index";
-
-const images: Photos[] = [
-  {
-    id: 1,
-    uri: require("@/assets/images/welcomeImageCocktails.png"),
-  },
-  {
-    id: 2,
-    uri: require("@/assets/images/martini.jpg"),
-  },
-  {
-    id: 3,
-    uri: require("@/assets/images/welcomeImageCocktails.png"),
-  },
-  {
-    id: 4,
-    uri: require("@/assets/images/martini.jpg"),
-  },
-  {
-    id: 5,
-    uri: require("@/assets/images/welcomeImageCocktails.png"),
-  },
-];
+import { CocktailSummaryDTO } from "@/interfaces/responses/cocktail";
+import { useEffect } from "react";
+import { getRandomCocktails } from "@/services/CocktailService";
+import { handleLikeCocktail } from "@/utils/cocktail";
+import useAsync, { AsyncStatus } from "@/hooks/useAsync";
 
 const styles = StyleSheet.create({
   title: {
@@ -49,6 +31,21 @@ const styles = StyleSheet.create({
 });
 
 export default function Index() {
+  const {
+    data: randomCocktails,
+    setData: setRandomCocktails,
+    execute,
+    status,
+    refresh,
+  } = useAsync<CocktailSummaryDTO[]>({
+    defaultState: [],
+    asyncFunction: getRandomCocktails,
+  });
+
+  useEffect(() => {
+    execute();
+  }, []);
+
   const { width } = Dimensions.get("window");
 
   const handleSearchPressed = (): void => {
@@ -79,11 +76,17 @@ export default function Index() {
 
       <View style={{ width: width, height: 300 }}>
         <Carousel
-          data={images}
-          renderItem={({ item, index }: { item: Photos; index: number }) => (
+          data={randomCocktails ? randomCocktails.slice(0, 5) : []}
+          renderItem={({
+            item,
+            index,
+          }: {
+            item: CocktailSummaryDTO;
+            index: number;
+          }) => (
             <View key={index}>
               <Image
-                source={item.uri}
+                source={{ uri: item.imageUrl }}
                 style={{ width: width, height: 275, resizeMode: "cover" }}
               />
             </View>
@@ -101,16 +104,26 @@ export default function Index() {
         contentContainerStyle={{
           flexGrow: 1,
         }}
+        refreshControl={
+          <RefreshControl
+            refreshing={status === AsyncStatus.REFRESHING}
+            onRefresh={refresh}
+          />
+        }
       >
-        {[...Array(5)].map((_, index) => (
+        {randomCocktails?.map((item) => (
           <CocktailCard
-            name="Pornstar Martini"
-            image={require("@/assets/images/welcomeImageCocktails.png")}
-            score={3.5}
-            numberOfReviews={34}
-            isFavorite={false}
-            cocktailId={index}
-            key={index}
+            name={item.name}
+            imageUrl={item.imageUrl}
+            creatorImageUrl={item.creatorImageUrl}
+            onLikePress={() =>
+              handleLikeCocktail(item.id, randomCocktails, setRandomCocktails)
+            }
+            score={item.rating}
+            numberOfReviews={item.numberOfRatings}
+            isFavorite={item.isFavorite}
+            cocktailId={item.id}
+            key={item.id}
           />
         ))}
       </ScrollView>

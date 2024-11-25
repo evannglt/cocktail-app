@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { router } from "expo-router";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import ScoreStars from "@/components/ScoreStars";
+import { toggleCocktailFavorites } from "@/services/CocktailService";
 
 interface CocktailCardProps {
   name: string;
-  image: number;
+  imageUrl: string;
+  creatorImageUrl: string;
   isFavorite: boolean;
+  onLikePress: () => void;
   score?: number;
   description?: string;
   numberOfReviews: number;
@@ -75,19 +78,15 @@ const styles = StyleSheet.create({
 
 const CocktailCard: React.FC<CocktailCardProps> = ({
   name,
-  image,
+  imageUrl,
+  creatorImageUrl,
   isFavorite,
+  onLikePress,
   score,
   description,
   numberOfReviews,
   cocktailId,
 }) => {
-  const [isFavoriteState, setIsFavorite] = useState(isFavorite);
-
-  const onFavoriteToggle = () => {
-    setIsFavorite(!isFavoriteState);
-  };
-
   const handleCocktailPress = (cocktailId: number) => {
     router.push({
       pathname: "/cocktail/[id]",
@@ -103,10 +102,10 @@ const CocktailCard: React.FC<CocktailCardProps> = ({
       activeOpacity={0.5}
       style={styles.card}
     >
-      <Image source={image} style={styles.image} />
+      <Image source={{ uri: imageUrl }} style={styles.image} />
       <View style={styles.headerContainer}>
         <Image
-          source={require("@/assets/images/profile.jpg")}
+          source={{ uri: creatorImageUrl }}
           style={styles.profilePicture}
         />
         <View style={styles.info}>
@@ -123,11 +122,11 @@ const CocktailCard: React.FC<CocktailCardProps> = ({
         </View>
       </View>
       <TouchableOpacity
-        onPress={onFavoriteToggle}
+        onPress={onLikePress}
         style={styles.favoriteIcon}
         activeOpacity={0.5}
       >
-        {isFavoriteState ? (
+        {isFavorite ? (
           <FontAwesome name="heart" size={16} color="red" />
         ) : (
           <FontAwesome5 name="heart" size={16} color={Colors.light.grey} />

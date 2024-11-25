@@ -1,7 +1,7 @@
-import { UserResponse } from "./user";
+import { APIResponse } from "./api";
 
 export interface AuthResponse {
   token: string;
 }
 
-export type RegisterResponse = UserResponse;
+export type RegisterResponse = APIResponse;

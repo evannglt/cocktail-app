@@ -33,7 +33,7 @@ export const register = async (
   registerRequest: RegisterRequest
 ): Promise<boolean> => {
   try {
-    const response = await api.post<RegisterResponse>(
+    await api.post<RegisterResponse>(
       `${AUTH_ENDPOINT}/register`,
       registerRequest
     );

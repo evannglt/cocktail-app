@@ -5,7 +5,7 @@ import { Colors } from "@/constants/Colors";
 
 interface CocktailCardProps {
   name: string;
-  image: number;
+  imageUrl: string;
   description: string;
   cocktailId: number;
 }
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
 
 const CocktailCard: React.FC<CocktailCardProps> = ({
   name,
-  image,
+  imageUrl,
   description,
   cocktailId,
 }) => {
@@ -68,7 +68,7 @@ const CocktailCard: React.FC<CocktailCardProps> = ({
       activeOpacity={0.5}
       style={styles.card}
     >
-      <Image source={image} style={styles.image} />
+      <Image source={{ uri: imageUrl }} style={styles.image} />
       <View style={styles.info}>
         <Text style={styles.name}>{name}</Text>
         <Text style={styles.description} numberOfLines={2}>

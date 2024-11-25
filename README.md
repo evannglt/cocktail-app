@@ -96,6 +96,14 @@ frontend:
 To start the containers, run the following command:
 
 ```shell
+docker compose up backend -d
+```
+
+Running this command will automatically start the backend container in detached mode, as well as its dependencies (PostgreSQL DB and Ollama API).
+Keep in mind that because the backend depends on a Ollama API, it may pull the model the first time you run it.
+Once it is fully running (see the logs **Model pulled successfully**), you can start the frontend container:
+
+```shell
 docker compose up frontend
 ```
 

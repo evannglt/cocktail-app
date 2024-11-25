@@ -1,5 +1,5 @@
-import React from "react";
-import { router } from "expo-router";
+import React, { useCallback, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
 import {
   View,
   Pressable,
@@ -10,6 +10,9 @@ import {
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import CocktailCard from "@/components/CocktailCard";
+import { CocktailSummaryDTO } from "@/interfaces/responses/cocktail";
+import { getFavoriteCocktails } from "@/services/CocktailService";
+import { handleLikeCocktail } from "@/utils/cocktail";
 
 const styles = StyleSheet.create({
   container: {
@@ -35,9 +38,27 @@ const styles = StyleSheet.create({
     textAlign: "center",
     flex: 1,
   },
+  noCocktailText: {
+    textAlign: "center",
+    fontSize: 18,
+    alignSelf: "center",
+    marginTop: 50,
+  },
 });
 
 export default function Favorites() {
+  const [favoriteCocktails, setFavoriteCocktails] = useState<
+    CocktailSummaryDTO[]
+  >([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      getFavoriteCocktails().then((cocktails) =>
+        setFavoriteCocktails(cocktails)
+      );
+    }, [])
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
@@ -52,17 +73,29 @@ export default function Favorites() {
           flexGrow: 1,
         }}
       >
-        {[...Array(2)].map((_, index) => (
-          <CocktailCard
-            name="Pornstar Martini"
-            image={require("@/assets/images/welcomeImageCocktails.png")}
-            score={2}
-            numberOfReviews={1234}
-            isFavorite={true}
-            cocktailId={index}
-            key={index}
-          />
-        ))}
+        {favoriteCocktails.length === 0 ? (
+          <Text style={styles.noCocktailText}>No favorite cocktail yet</Text>
+        ) : (
+          favoriteCocktails.map((item) => (
+            <CocktailCard
+              name={item.name}
+              imageUrl={item.imageUrl}
+              creatorImageUrl={item.creatorImageUrl}
+              onLikePress={() =>
+                handleLikeCocktail(
+                  item.id,
+                  favoriteCocktails,
+                  setFavoriteCocktails
+                )
+              }
+              score={item.rating}
+              numberOfReviews={item.numberOfRatings}
+              isFavorite={item.isFavorite}
+              cocktailId={item.id}
+              key={item.id}
+            />
+          ))
+        )}
       </ScrollView>
     </SafeAreaView>
   );

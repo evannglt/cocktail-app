@@ -4,7 +4,6 @@ import com.cocktail27.api.dto.AuthRequest;
 import com.cocktail27.api.dto.AuthResponse;
 import com.cocktail27.api.dto.APIResponse;
 import com.cocktail27.api.dto.RegisterRequest;
-import com.cocktail27.api.model.User;
 import com.cocktail27.api.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +19,8 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
         try {
-            User newUser = authService.registerUser(registerRequest);
-            return ResponseEntity.ok(newUser);
+            authService.registerUser(registerRequest);
+            return ResponseEntity.ok(new APIResponse("User registered successfully"));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(new APIResponse(e.getMessage()));
         }
