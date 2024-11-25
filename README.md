@@ -2,7 +2,34 @@
 
 ## Team Members
 
+- Junpeng Cui
+- Evann Guillot
+- Lisa Hoang
+- Ana Lannelongue Garcia
+- Marie Roulier
+- Óscar Sabán Moreno
+
+## Organization
+
+- [Jira](https://tcd-team-cocktail27.atlassian.net/jira/software/projects/COC/boards/1)
+
+Working in Scrum, we divided the project into sprints of two weeks.
+
+We used Jira to manage the project, with a board containing the tasks to be done, the tasks in progress, the tasks being reviewed and the tasks that are done.
+
+We also used the backlog to keep track of the tasks that need to be done in the future, some of them could not be done in the time frame of the project.
+
 ## Project Description
+
+This project is a mobile application that allows users to search and create cocktail recipes.
+The app has a minimalistic design and is easy to use. Users can:
+- Search for cocktails by name (with calls to [TheCocktailDB API](https://www.thecocktaildb.com/api.php))
+- Save their favorite cocktails
+- Create and share their own recipes
+- Generate a recipe using generative AI (Ollama with the model llama3.2:1b running locally)
+- Rate other users' recipes
+- Check another user's profile and see their recipes
+- Update and delete their account
 
 ## Requirements to run the project
 
