@@ -63,8 +63,7 @@ docker compose build
 ### Exposing the backend to the frontend
 
 Use ngrok to expose the backend to the frontend.
-Note that this would not be relevant in a production environment, as the backend
-would be hosted on a dedicated server.
+Note that this would not be relevant in a production environment, as the backend would be hosted on a dedicated server.
 
 ```shell
 ngrok http 8080
