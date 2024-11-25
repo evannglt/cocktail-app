@@ -2,18 +2,20 @@
 
 ## Team Members
 
-- Junpeng Cui
-- Evann Guillot
-- Lisa Hoang
-- Ana Lannelongue Garcia
-- Marie Roulier
-- Óscar Sabán Moreno
+- **Junpeng Cui**
+- **Evann Guillot:** Tech Lead
+- **Lisa Hoang**
+- **Ana Lannelongue Garcia**
+- **Marie Roulier:** Software Developer
+- **Óscar Sabán Moreno**
 
 ## Organization
 
-- [Jira](https://tcd-team-cocktail27.atlassian.net/jira/software/projects/COC/boards/1)
+- Link to our [Jira](https://tcd-team-cocktail27.atlassian.net/jira/software/projects/COC/boards/1)
+- Link to our [Diary](diary.md)
 
 Working in Scrum, we divided the project into sprints of two weeks.
+We also kept track of our issues and development decisions in our diary. We tried to discussions about the design and on-going issues every couple of days.
 
 We used Jira to manage the project, with a board containing the tasks to be done, the tasks in progress, the tasks being reviewed and the tasks that are done.
 
@@ -22,7 +24,9 @@ We also used the backlog to keep track of the tasks that need to be done in the 
 ## Project Description
 
 This project is a mobile application that allows users to search and create cocktail recipes.
-The app has a minimalistic design and is easy to use. Users can:
+The app has a minimalistic design and is easy to use.
+Users can:
+
 - Search for cocktails by name (with calls to [TheCocktailDB API](https://www.thecocktaildb.com/api.php))
 - Save their favorite cocktails
 - Create and share their own recipes
@@ -59,7 +63,7 @@ docker compose build
 ### Exposing the backend to the frontend
 
 Use ngrok to expose the backend to the frontend.
-Note that this would not be relevant in a production environment, as the backend 
+Note that this would not be relevant in a production environment, as the backend
 would be hosted on a dedicated server.
 
 ```shell
@@ -72,19 +76,19 @@ Copy the forwarding URL and replace the **\<your-ngrok-url\>** for the `EXPO_PUB
 
 ```yaml
 frontend:
-    build: ./cocktail-app
-    container_name: frontend
-    depends_on:
-      - backend
-    ports:
-      - "19000:19000"
-      - "19001:19001"
-      - "19002:19002"
-      - "8081:8081"
-    environment:
-      EXPO_PUBLIC_API_URL: "<your-ngrok-url>/api"
-    tty: true
-    restart: unless-stopped
+  build: ./cocktail-app
+  container_name: frontend
+  depends_on:
+    - backend
+  ports:
+    - "19000:19000"
+    - "19001:19001"
+    - "19002:19002"
+    - "8081:8081"
+  environment:
+    EXPO_PUBLIC_API_URL: "<your-ngrok-url>/api"
+  tty: true
+  restart: unless-stopped
 ```
 
 ### Starting the containers
@@ -95,7 +99,7 @@ To start the containers, run the following command:
 docker compose up frontend
 ```
 
-Because the frontend depends on the backend, and the backend depends on the database, the containers will be started in the correct order. 
+Because the frontend depends on the backend, and the backend depends on the database, the containers will be started in the correct order.
 
 This command should display the logs of the frontend container, that contain a **QR code** that can be scanned to run the app on a mobile device using the **Expo Go** app.
 
@@ -104,3 +108,14 @@ To stop the containers, run the following command:
 ```shell
 docker compose down
 ```
+
+## Tests
+
+We decided on not doing any Front-End tests because of the short time constraints.
+
+However, we did Back-End tests using the Mockito framework.
+The only thing needed to run them is to click "Run all tests" when clicking on the 'tests' folder.
+
+## Video
+
+Link to our uploaded video
