@@ -2,12 +2,14 @@
 
 ## Team Members
 
-- **Junpeng Cui**
+- **Junpeng Cui:** Software Developer
 - **Evann Guillot:** Tech Lead
-- **Lisa Hoang**
-- **Ana Lannelongue Garcia**
-- **Marie Roulier:** Software Developer
-- **Óscar Sabán Moreno**
+- **Lisa Hoang:** Product Owner
+- **Ana Lannelongue Garcia:** Design Lead
+- **Marie Roulier:** Scrum Master
+- **Óscar Sabán Moreno:** Software Developer
+
+Those roles were assigned at the beginning of the project, but they were not fixed and we all contributed to all the tasks.
 
 ## Organization
 

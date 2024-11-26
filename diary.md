@@ -68,6 +68,7 @@ Here's the link to the [JIRA](https://tcd-team-cocktail27.atlassian.net/jira/sof
 #### Week 4
 
 - Last design implementations (_search_ page) and adjustements (logic changes on the _edit profile_ page, adding some more information about the cocktail such as the glass it should be poured in and if it is alcoholic or not).
+- Implementation of the generation of a complete recipe from a cocktail name using Ollama API. We chose to use llama3.2:1b, one of the smallest models, because it was the smallest one that could fit on many computers, since it is running locally. As a comparison, GPT-3 has 175 billion parameters, and GPT-4o has around 1.6 trillion parameters, so the results are not as good as those models, but still good enough (most of the time) for our use case.
 
 ###### Front-End issues
 
@@ -76,3 +77,5 @@ Here's the link to the [JIRA](https://tcd-team-cocktail27.atlassian.net/jira/sof
 ###### Back-End issues
 
 - We decided to populate the database with 100 random cocktails from the external API at startup, but the API only allows 60 request every 10 seconds, so we limited our populating service to 50 cocktails.
+- Sometimes, the response from Ollama is not valid and it throws an error on the frontend, we didn't have time to fix this issue. 
+- For Ollama, multiple things that could have be done include: changing the temperature of the model (to ensure 2 identical requests give the same output), changing the model, or changing the prompt to the model. Also, we could have created a model from another one by tweaking the parameters using the Modelfile, but this would have taken too much time to determine the most optimal parameters.
