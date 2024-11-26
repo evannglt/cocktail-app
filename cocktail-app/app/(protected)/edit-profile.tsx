@@ -21,9 +21,10 @@ const styles = StyleSheet.create({
     minHeight: "100%",
     flex: 1,
     alignItems: "center",
+    justifyContent: "center",
   },
   subcontainer: {
-    flexGrow: 1,
+    flexGrow: 0.5,
     justifyContent: "flex-start",
     width: "100%",
     alignItems: "center",
@@ -71,7 +72,7 @@ const styles = StyleSheet.create({
     width: "87%",
     backgroundColor: Colors.light.orange,
     borderRadius: 8,
-    marginBottom: 25,
+    marginVertical: 25,
     opacity: 1,
     shadowColor: "#000",
     shadowOffset: {
@@ -135,7 +136,7 @@ const EditProfile: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.subcontainer}>
         <View style={styles.headerContainer}>
           <Pressable onPress={() => router.back()} style={styles.closeIcon}>
@@ -191,7 +192,7 @@ const EditProfile: React.FC = () => {
       >
         <Text style={styles.saveChangesButtonText}>Save Changes</Text>
       </Pressable>
-    </SafeAreaView>
+    </View>
   );
 };
 
