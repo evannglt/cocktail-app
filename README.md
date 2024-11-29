@@ -2,7 +2,40 @@
 
 ## Team Members
 
+- **Junpeng Cui:** Software Developer
+- **Evann Guillot:** Tech Lead
+- **Lisa Hoang:** Product Owner
+- **Ana Lannelongue Garcia:** Design Lead
+- **Marie Roulier:** Scrum Master
+- **Óscar Sabán Moreno:** Software Developer
+
+Those roles were assigned at the beginning of the project, but they were not fixed and we all contributed to all the tasks.
+
+## Organization
+
+- Link to our [Jira](https://tcd-team-cocktail27.atlassian.net/jira/software/projects/COC/boards/1)
+- Link to our [Diary](diary.md)
+
+Working in Scrum, we divided the project into sprints of two weeks.
+We also kept track of our issues and development decisions in our diary. We tried to discuss about the design and on-going issues every couple of days.
+
+We used Jira to manage the project, with a board containing the tasks to be done, the tasks in progress, the tasks being reviewed and the tasks that are done.
+
+We also used the backlog to keep track of the tasks that need to be done in the future, some of them could not be done in the time frame of the project.
+
 ## Project Description
+
+This project is a mobile application that allows users to search and create cocktail recipes.
+The app has a minimalistic design and is easy to use.
+Users can:
+
+- Search for cocktails by name (with calls to [TheCocktailDB API](https://www.thecocktaildb.com/api.php))
+- Save their favorite cocktails
+- Create and share their own recipes (in My Recipes tab)
+- Generate a recipe using generative AI (Ollama with the model llama3.2:1b running locally)
+- Rate cocktail recipes (when clicking on a Cocktail)
+- Check another user's profile and see their recipes (by clicking the user's profile picture in a cocktail recipe)
+- Update and delete their account (in Profile tab)
 
 ## Requirements to run the project
 
@@ -32,8 +65,7 @@ docker compose build
 ### Exposing the backend to the frontend
 
 Use ngrok to expose the backend to the frontend.
-Note that this would not be relevant in a production environment, as the backend 
-would be hosted on a dedicated server.
+Note that this would not be relevant in a production environment, as the backend would be hosted on a dedicated server.
 
 ```shell
 ngrok http 8080
@@ -45,19 +77,19 @@ Copy the forwarding URL and replace the **\<your-ngrok-url\>** for the `EXPO_PUB
 
 ```yaml
 frontend:
-    build: ./cocktail-app
-    container_name: frontend
-    depends_on:
-      - backend
-    ports:
-      - "19000:19000"
-      - "19001:19001"
-      - "19002:19002"
-      - "8081:8081"
-    environment:
-      EXPO_PUBLIC_API_URL: "<your-ngrok-url>/api"
-    tty: true
-    restart: unless-stopped
+  build: ./cocktail-app
+  container_name: frontend
+  depends_on:
+    - backend
+  ports:
+    - "19000:19000"
+    - "19001:19001"
+    - "19002:19002"
+    - "8081:8081"
+  environment:
+    EXPO_PUBLIC_API_URL: "<your-ngrok-url>/api"
+  tty: true
+  restart: unless-stopped
 ```
 
 ### Starting the containers
@@ -76,6 +108,8 @@ Once it is fully running (see the logs **Model pulled successfully**), you can s
 docker compose up frontend
 ```
 
+Because the frontend depends on the backend, and the backend depends on the database, the containers will be started in the correct order.
+
 This command should display the logs of the frontend container, that contain a **QR code** that can be scanned to run the app on a mobile device using the **Expo Go** app.
 
 To stop the containers, run the following command:
@@ -83,3 +117,19 @@ To stop the containers, run the following command:
 ```shell
 docker compose down
 ```
+
+## Tests
+
+We decided on not doing any Front-End tests because of the short time constraints.
+
+However, we did Back-End tests.
+We unit tested most of the endpoints and the services using the mockito framework, and for specific services with crucial functionality, we also ran integration tests.
+The only thing needed to run this command line in the `api` folder:
+
+```shell
+./mvnw clean test
+```
+
+## Video
+
+Link to our [uploaded video](https://media.heanet.ie/page/6888d0a125d54c50b24a12a0a0819e59)
